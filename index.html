@@ -1,2233 +1,1074 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>SplitSecond – Challenge. Respond. Reveal.</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>SplitSecond – Challenge. Respond. Reveal.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* ----- RESET & BASE ----- */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --primary: #7C3AED; --primary-light: #A78BFA; --primary-dark: #5B21B6;
+      --secondary: #06D6A0; --secondary-light: #34D399;
+      --accent-pink: #EC4899; --accent-orange: #F59E0B; --accent-red: #EF4444;
+      --bg-start: #0F0A1A; --bg-end: #1A1025;
+      --card-bg: rgba(255,255,255,0.08); --card-border: rgba(255,255,255,0.12);
+      --glass-bg: rgba(255,255,255,0.06); --glass-border: rgba(255,255,255,0.10);
+      --text-primary: #F1F5F9; --text-secondary: #94A3B8; --text-muted: #64748B;
+      --shadow-glow: 0 8px 32px rgba(124,58,237,0.30);
+      --radius: 20px; --radius-sm: 12px;
+      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    html, body { font-family:'Inter',sans-serif; background:#0B0815; color:var(--text-primary); height:100%; overflow:hidden; }
+    #app {
+      display:flex; flex-direction:column; height:100vh; max-width:480px; margin:0 auto;
+      background: radial-gradient(ellipse at 20% 20%, #1A1030, #0B0815 80%);
+      position:relative; overflow:hidden; box-shadow:0 0 60px rgba(124,58,237,0.15);
+    }
+    /* ---- Ambient Orbs ---- */
+    .orb { position:absolute; border-radius:50%; filter:blur(80px); pointer-events:none; opacity:0.35; z-index:0; animation:orbFloat 12s ease-in-out infinite alternate; }
+    .orb-1 { width:300px; height:300px; background:#7C3AED; top:-80px; right:-80px; }
+    .orb-2 { width:250px; height:250px; background:#06D6A0; bottom:-60px; left:-60px; animation-delay:4s; }
+    .orb-3 { width:200px; height:200px; background:#EC4899; top:40%; left:-40px; animation-delay:8s; opacity:0.20; }
+    .orb-4 { width:180px; height:180px; background:#F59E0B; bottom:30%; right:-30px; animation-delay:2s; opacity:0.18; }
+    @keyframes orbFloat { 0%{ transform:translate(0,0) scale(1); } 100%{ transform:translate(30px,-30px) scale(1.1); } }
 
-    <!-- Font & Icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    /* ---- Screens ---- */
+    .screen { display:none; flex-direction:column; flex:1; padding:16px 16px 80px; overflow-y:auto; position:relative; z-index:1; animation:screenFade 0.4s ease; min-height:0; }
+    .screen.active { display:flex; }
+    @keyframes screenFade { 0%{ opacity:0; transform:translateY(12px); } 100%{ opacity:1; transform:translateY(0); } }
 
-    <style>
-        /* ===== RESET & BASE ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    /* ---- Splash ---- */
+    #splash { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; background:radial-gradient(ellipse at center,#1A1030,#0B0815); z-index:100; position:absolute; inset:0; transition:opacity 0.8s ease, transform 0.8s ease; }
+    #splash.hidden { opacity:0; transform:scale(1.05); pointer-events:none; }
+    .splash-logo { font-size:64px; font-weight:800; background:linear-gradient(135deg,#A78BFA,#06D6A0,#EC4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:pulseLogo 1.8s ease-in-out infinite; }
+    .splash-logo i { -webkit-text-fill-color:initial; color:#F59E0B; margin-right:4px; font-size:52px; }
+    .splash-tagline { color:var(--text-secondary); font-size:15px; letter-spacing:2px; margin-top:8px; opacity:0.7; animation:fadeUp 1.2s ease 0.3s both; }
+    .splash-loader { margin-top:36px; width:42px; height:42px; border-radius:50%; border:3px solid rgba(124,58,237,0.15); border-top-color:var(--primary-light); animation:spin 0.9s linear infinite; }
+    @keyframes pulseLogo { 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.04); } }
+    @keyframes spin { to{ transform:rotate(360deg); } }
+    @keyframes fadeUp { 0%{ opacity:0; transform:translateY(10px); } 100%{ opacity:0.7; transform:translateY(0); } }
 
-        :root {
-            --primary: #7C3AED;
-            --primary-light: #A78BFA;
-            --primary-dark: #5B21B6;
-            --secondary: #06D6A0;
-            --secondary-light: #34D399;
-            --accent-pink: #EC4899;
-            --accent-orange: #F59E0B;
-            --accent-red: #EF4444;
-            --accent-blue: #3B82F6;
-            --accent-cyan: #06B6D4;
-            --bg-start: #0F0A1A;
-            --bg-end: #1A1025;
-            --card-bg: rgba(255, 255, 255, 0.08);
-            --card-border: rgba(255, 255, 255, 0.12);
-            --glass-bg: rgba(255, 255, 255, 0.06);
-            --glass-border: rgba(255, 255, 255, 0.10);
-            --text-primary: #F1F5F9;
-            --text-secondary: #94A3B8;
-            --text-muted: #64748B;
-            --shadow-glow: 0 8px 32px rgba(124, 58, 237, 0.30);
-            --radius: 20px;
-            --radius-sm: 12px;
-            --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+    /* ---- Onboarding ---- */
+    #onboarding { padding:0 20px 40px; justify-content:center; align-items:center; text-align:center; min-height:100vh; }
+    .onboard-slide { display:none; flex-direction:column; align-items:center; gap:18px; animation:slideIn 0.5s ease; }
+    .onboard-slide.active { display:flex; }
+    @keyframes slideIn { 0%{ opacity:0; transform:translateX(30px); } 100%{ opacity:1; transform:translateX(0); } }
+    .onboard-icon { font-size:72px; margin-bottom:8px; background:linear-gradient(135deg,var(--primary-light),var(--secondary)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .onboard-title { font-size:28px; font-weight:700; background:linear-gradient(135deg,#fff,#A78BFA); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .onboard-desc { color:var(--text-secondary); font-size:16px; max-width:300px; line-height:1.6; }
+    .onboard-dots { display:flex; gap:10px; margin-top:12px; }
+    .onboard-dot { width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,0.15); transition:var(--transition); cursor:pointer; }
+    .onboard-dot.active { background:var(--primary-light); width:28px; border-radius:6px; }
+    .onboard-actions { display:flex; flex-direction:column; gap:12px; margin-top:24px; width:100%; max-width:280px; }
+    .onboard-actions .btn { width:100%; }
 
-        html,
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #0F0A1A;
-            color: var(--text-primary);
-            height: 100%;
-            overflow: hidden;
-            -webkit-tap-highlight-color: transparent;
-        }
+    /* ---- Buttons ---- */
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:14px 28px; border-radius:var(--radius-sm); border:none; font-weight:600; font-size:15px; cursor:pointer; transition:var(--transition); text-decoration:none; font-family:inherit; }
+    .btn-primary { background:linear-gradient(135deg,var(--primary),var(--primary-dark)); color:#fff; box-shadow:0 4px 20px rgba(124,58,237,0.35); }
+    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(124,58,237,0.45); }
+    .btn-secondary { background:rgba(255,255,255,0.08); color:var(--text-primary); border:1px solid rgba(255,255,255,0.12); }
+    .btn-secondary:hover { background:rgba(255,255,255,0.14); }
+    .btn-success { background:linear-gradient(135deg,var(--secondary),#059669); color:#fff; box-shadow:0 4px 20px rgba(6,214,160,0.30); }
+    .btn-success:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(6,214,160,0.40); }
+    .btn-outline { background:transparent; color:var(--text-primary); border:1.5px solid rgba(255,255,255,0.20); }
+    .btn-outline:hover { background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.30); }
+    .btn-sm { padding:8px 16px; font-size:13px; border-radius:10px; }
+    .btn-glow { animation:glowPulse 2s ease-in-out infinite; }
+    @keyframes glowPulse { 0%,100%{ box-shadow:0 4px 20px rgba(124,58,237,0.35); } 50%{ box-shadow:0 4px 40px rgba(124,58,237,0.60); } }
 
-        /* ===== SCROLLBAR ===== */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 10px;
-        }
+    /* ---- Bottom Nav ---- */
+    #bottomNav {
+      position:fixed; bottom:0; left:0; right:0; max-width:480px; margin:0 auto;
+      display:flex; justify-content:space-around; align-items:center;
+      padding:8px 0 env(safe-area-inset-bottom,8px) 0;
+      background:rgba(15,10,26,0.85); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+      border-top:1px solid rgba(255,255,255,0.06); z-index:50; height:68px;
+    }
+    .nav-item { display:flex; flex-direction:column; align-items:center; gap:2px; background:none; border:none; color:var(--text-muted); font-size:10px; font-weight:500; cursor:pointer; padding:4px 12px; transition:var(--transition); font-family:inherit; position:relative; min-width:52px; }
+    .nav-item i { font-size:20px; transition:var(--transition); }
+    .nav-item.active { color:var(--primary-light); }
+    .nav-item.active i { transform:translateY(-2px); filter:drop-shadow(0 0 12px rgba(124,58,237,0.40)); }
+    .nav-item .nav-badge { position:absolute; top:0; right:4px; background:var(--accent-red); color:#fff; font-size:9px; font-weight:700; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .nav-create { background:linear-gradient(135deg,var(--primary),var(--secondary)); color:#fff; width:50px; height:50px; border-radius:50%; border:none; font-size:24px; cursor:pointer; box-shadow:0 4px 24px rgba(124,58,237,0.40); transition:var(--transition); margin-top:-16px; display:flex; align-items:center; justify-content:center; }
+    .nav-create:hover { transform:scale(1.06); box-shadow:0 8px 32px rgba(124,58,237,0.50); }
+    .nav-create:active { transform:scale(0.94); }
 
-        /* ===== APP SHELL ===== */
-        #app {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            max-width: 480px;
-            margin: 0 auto;
-            background: radial-gradient(ellipse at 20% 20%, #1A1030, #0B0815 80%);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 60px rgba(124, 58, 237, 0.15);
-        }
+    /* ---- Cards ---- */
+    .card { background:var(--card-bg); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid var(--card-border); border-radius:var(--radius); padding:16px 18px; transition:var(--transition); }
+    .card:hover { border-color:rgba(255,255,255,0.18); }
+    .card-glass { background:var(--glass-bg); border:1px solid var(--glass-border); backdrop-filter:blur(16px); }
 
-        /* ===== AMBIENT GLOW ORBS ===== */
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            pointer-events: none;
-            opacity: 0.35;
-            z-index: 0;
-            animation: orbFloat 12s ease-in-out infinite alternate;
-        }
-        .orb-1 {
-            width: 300px;
-            height: 300px;
-            background: #7C3AED;
-            top: -80px;
-            right: -80px;
-            animation-delay: 0s;
-        }
-        .orb-2 {
-            width: 250px;
-            height: 250px;
-            background: #06D6A0;
-            bottom: -60px;
-            left: -60px;
-            animation-delay: 4s;
-        }
-        .orb-3 {
-            width: 200px;
-            height: 200px;
-            background: #EC4899;
-            top: 40%;
-            left: -40px;
-            animation-delay: 8s;
-            opacity: 0.20;
-        }
-        .orb-4 {
-            width: 180px;
-            height: 180px;
-            background: #F59E0B;
-            bottom: 30%;
-            right: -30px;
-            animation-delay: 2s;
-            opacity: 0.18;
-        }
+    /* ---- Home ---- */
+    .home-header { display:flex; justify-content:space-between; align-items:center; padding:8px 0 16px; }
+    .home-header h1 { font-size:24px; font-weight:700; background:linear-gradient(135deg,#fff,#A78BFA); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .home-header h1 i { -webkit-text-fill-color:initial; color:#F59E0B; }
+    .home-header .badge-avatar { width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--secondary)); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; cursor:pointer; border:2px solid rgba(255,255,255,0.10); }
+    .section-title { font-size:16px; font-weight:600; margin:18px 0 12px; display:flex; align-items:center; gap:8px; }
+    .section-title .see-all { margin-left:auto; font-size:13px; font-weight:400; color:var(--text-muted); cursor:pointer; transition:var(--transition); }
+    .section-title .see-all:hover { color:var(--primary-light); }
 
-        @keyframes orbFloat {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-            100% {
-                transform: translate(30px, -30px) scale(1.1);
-            }
-        }
+    .challenge-card { background:var(--card-bg); backdrop-filter:blur(12px); border:1px solid var(--card-border); border-radius:var(--radius); padding:16px; margin-bottom:12px; transition:var(--transition); cursor:pointer; }
+    .challenge-card:hover { border-color:rgba(255,255,255,0.18); transform:translateY(-2px); }
+    .challenge-card .top { display:flex; justify-content:space-between; align-items:flex-start; }
+    .challenge-card .creator { display:flex; align-items:center; gap:10px; font-size:13px; }
+    .challenge-card .creator .avatar { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; color:#fff; }
+    .challenge-card .timer { display:flex; align-items:center; gap:6px; font-weight:600; font-size:14px; color:var(--accent-orange); }
+    .challenge-card .timer.warning { color:var(--accent-red); animation:blink 1s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
+    .challenge-card .title { font-size:17px; font-weight:600; margin:10px 0 6px; }
+    .challenge-card .meta { display:flex; gap:16px; font-size:13px; color:var(--text-secondary); margin-top:8px; flex-wrap:wrap; }
+    .challenge-card .meta i { margin-right:4px; }
+    .challenge-card .actions { display:flex; gap:8px; margin-top:12px; }
+    .xp-badge { background:rgba(6,214,160,0.15); color:var(--secondary); padding:2px 10px; border-radius:20px; font-size:12px; font-weight:600; }
 
-        /* ===== SCREENS ===== */
-        .screen {
-            display: none;
-            flex-direction: column;
-            flex: 1;
-            padding: 16px 16px 80px;
-            overflow-y: auto;
-            position: relative;
-            z-index: 1;
-            animation: screenFade 0.4s ease;
-        }
-        .screen.active {
-            display: flex;
-        }
+    /* ---- Create Form ---- */
+    .create-form { display:flex; flex-direction:column; gap:16px; padding-bottom:20px; }
+    .create-form label { font-size:13px; font-weight:500; color:var(--text-secondary); margin-bottom:4px; display:block; }
+    .create-form input, .create-form select, .create-form textarea { width:100%; padding:12px 14px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.04); color:var(--text-primary); font-size:15px; font-family:inherit; transition:var(--transition); outline:none; }
+    .create-form input:focus, .create-form select:focus, .create-form textarea:focus { border-color:var(--primary); background:rgba(255,255,255,0.06); box-shadow:0 0 0 3px rgba(124,58,237,0.15); }
+    .create-form textarea { resize:vertical; min-height:80px; }
+    .create-form select option { background:#1A1030; }
+    .type-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+    .type-grid .type-btn { padding:10px 6px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.03); color:var(--text-secondary); font-size:12px; font-weight:500; cursor:pointer; transition:var(--transition); text-align:center; font-family:inherit; }
+    .type-grid .type-btn i { display:block; font-size:20px; margin-bottom:4px; }
+    .type-grid .type-btn.active { border-color:var(--primary); background:rgba(124,58,237,0.12); color:var(--text-primary); }
+    .timer-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
+    .timer-grid .timer-btn { padding:8px 4px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.03); color:var(--text-secondary); font-size:12px; cursor:pointer; transition:var(--transition); font-family:inherit; }
+    .timer-grid .timer-btn.active { border-color:var(--secondary); background:rgba(6,214,160,0.10); color:var(--secondary); }
+    .safety-warning { background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.15); border-radius:var(--radius-sm); padding:12px 14px; font-size:13px; color:var(--accent-red); display:flex; align-items:flex-start; gap:10px; }
 
-        @keyframes screenFade {
-            0% {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+    /* ---- Live Challenge ---- */
+    .live-timer { font-size:56px; font-weight:700; text-align:center; font-variant-numeric:tabular-nums; background:linear-gradient(135deg,#fff,#A78BFA); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; letter-spacing:2px; animation:timerGlow 2s ease-in-out infinite alternate; }
+    @keyframes timerGlow { 0%{ filter:drop-shadow(0 0 20px rgba(124,58,237,0.2)); } 100%{ filter:drop-shadow(0 0 40px rgba(124,58,237,0.5)); } }
+    .live-progress { width:100%; height:6px; border-radius:10px; background:rgba(255,255,255,0.06); margin:16px 0; overflow:hidden; }
+    .live-progress .bar { height:100%; border-radius:10px; background:linear-gradient(90deg,var(--primary),var(--secondary)); transition:width 1s linear; width:72%; }
+    .live-participants { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:12px 0; }
+    .live-participants .avatar-stack { display:flex; }
+    .live-participants .avatar-stack .mini-avatar { width:32px; height:32px; border-radius:50%; border:2px solid #0F0A1A; margin-right:-8px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:#fff; }
+    .live-participants .count { font-size:14px; color:var(--text-secondary); margin-left:4px; }
+    .live-participants .count strong { color:var(--text-primary); }
 
-        /* ===== SPLASH ===== */
-        #splash {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex: 1;
-            padding: 0;
-            background: radial-gradient(ellipse at center, #1A1030, #0B0815);
-            z-index: 100;
-            position: absolute;
-            inset: 0;
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-        #splash.hidden {
-            opacity: 0;
-            transform: scale(1.05);
-            pointer-events: none;
-        }
-        .splash-logo {
-            font-size: 64px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #A78BFA, #06D6A0, #EC4899);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: pulseLogo 1.8s ease-in-out infinite;
-            letter-spacing: -1px;
-            position: relative;
-        }
-        .splash-logo i {
-            -webkit-text-fill-color: initial;
-            color: #F59E0B;
-            margin-right: 4px;
-            font-size: 52px;
-        }
-        .splash-tagline {
-            color: var(--text-secondary);
-            font-size: 15px;
-            letter-spacing: 2px;
-            margin-top: 8px;
-            font-weight: 400;
-            opacity: 0.7;
-            animation: fadeUp 1.2s ease 0.3s both;
-        }
-        .splash-loader {
-            margin-top: 36px;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            border: 3px solid rgba(124, 58, 237, 0.15);
-            border-top-color: var(--primary-light);
-            animation: spin 0.9s linear infinite;
-        }
-        @keyframes pulseLogo {
-            0%,
-            100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.04);
-            }
-        }
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-        @keyframes fadeUp {
-            0% {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            100% {
-                opacity: 0.7;
-                transform: translateY(0);
-            }
-        }
+    /* ---- Response ---- */
+    .response-options { display:flex; flex-direction:column; gap:10px; margin:16px 0; }
+    .response-options .opt { padding:14px 16px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.03); color:var(--text-primary); font-size:15px; cursor:pointer; transition:var(--transition); text-align:left; font-family:inherit; }
+    .response-options .opt:hover { background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.12); }
+    .response-options .opt.selected { border-color:var(--primary); background:rgba(124,58,237,0.12); }
+    .response-options .opt .emoji { margin-right:10px; font-size:20px; }
 
-        /* ===== ONBOARDING ===== */
-        #onboarding {
-            padding: 0 20px 40px;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            min-height: 100vh;
-        }
-        .onboard-slide {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 18px;
-            animation: slideIn 0.5s ease;
-        }
-        .onboard-slide.active {
-            display: flex;
-        }
-        @keyframes slideIn {
-            0% {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        .onboard-icon {
-            font-size: 72px;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .onboard-title {
-            font-size: 28px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff, #A78BFA);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .onboard-desc {
-            color: var(--text-secondary);
-            font-size: 16px;
-            max-width: 300px;
-            line-height: 1.6;
-        }
-        .onboard-dots {
-            display: flex;
-            gap: 10px;
-            margin-top: 12px;
-        }
-        .onboard-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.15);
-            transition: var(--transition);
-            cursor: pointer;
-        }
-        .onboard-dot.active {
-            background: var(--primary-light);
-            width: 28px;
-            border-radius: 6px;
-        }
-        .onboard-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 24px;
-            width: 100%;
-            max-width: 280px;
-        }
-        .onboard-actions .btn {
-            width: 100%;
-        }
+    /* ---- Results ---- */
+    .result-hero { text-align:center; padding:20px 0; }
+    .result-hero .trophy { font-size:64px; animation:bounce 1.2s ease infinite; }
+    @keyframes bounce { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-12px); } }
+    .result-hero .big-text { font-size:24px; font-weight:700; margin:8px 0 4px; }
+    .result-hero .sub { color:var(--text-secondary); font-size:15px; }
+    .result-stats { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:16px 0; }
+    .result-stats .stat-card { background:rgba(255,255,255,0.04); border-radius:var(--radius-sm); padding:14px; text-align:center; }
+    .result-stats .stat-card .num { font-size:22px; font-weight:700; color:var(--primary-light); }
+    .result-stats .stat-card .label { font-size:12px; color:var(--text-secondary); margin-top:2px; }
 
-        /* ===== BUTTONS ===== */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 14px 28px;
-            border-radius: var(--radius-sm);
-            border: none;
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
-            font-family: inherit;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: #fff;
-            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.35);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.45);
-        }
-        .btn-primary:active {
-            transform: scale(0.97);
-        }
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--text-primary);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-        }
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.14);
-        }
-        .btn-success {
-            background: linear-gradient(135deg, var(--secondary), #059669);
-            color: #fff;
-            box-shadow: 0 4px 20px rgba(6, 214, 160, 0.30);
-        }
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(6, 214, 160, 0.40);
-        }
-        .btn-outline {
-            background: transparent;
-            color: var(--text-primary);
-            border: 1.5px solid rgba(255, 255, 255, 0.20);
-        }
-        .btn-outline:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(255, 255, 255, 0.30);
-        }
-        .btn-sm {
-            padding: 8px 16px;
-            font-size: 13px;
-            border-radius: 10px;
-        }
-        .btn-glow {
-            animation: glowPulse 2s ease-in-out infinite;
-        }
-        @keyframes glowPulse {
-            0%,
-            100% {
-                box-shadow: 0 4px 20px rgba(124, 58, 237, 0.35);
-            }
-            50% {
-                box-shadow: 0 4px 40px rgba(124, 58, 237, 0.60);
-            }
-        }
+    /* ---- Profile ---- */
+    .profile-header { text-align:center; padding:16px 0; }
+    .profile-avatar { width:80px; height:80px; border-radius:50%; margin:0 auto 12px; display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:700; color:#fff; border:3px solid rgba(255,255,255,0.10); background:linear-gradient(135deg,var(--primary),var(--secondary)); cursor:pointer; transition:var(--transition); position:relative; overflow:hidden; }
+    .profile-avatar:hover { transform:scale(1.04); }
+    .profile-avatar img { width:100%; height:100%; border-radius:50%; object-fit:cover; }
+    .profile-name { font-size:22px; font-weight:700; }
+    .profile-handle { color:var(--text-secondary); font-size:14px; }
+    .profile-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:16px 0; }
+    .profile-stats .stat { background:rgba(255,255,255,0.04); border-radius:var(--radius-sm); padding:12px; text-align:center; }
+    .profile-stats .stat .num { font-size:20px; font-weight:700; }
+    .profile-stats .stat .label { font-size:11px; color:var(--text-secondary); margin-top:2px; }
+    .badge-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:12px 0; }
+    .badge-grid .badge-item { text-align:center; padding:10px 4px; background:rgba(255,255,255,0.03); border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.04); }
+    .badge-grid .badge-item .icon { font-size:28px; }
+    .badge-grid .badge-item .name { font-size:10px; color:var(--text-secondary); margin-top:4px; }
+    .badge-grid .badge-item.locked { opacity:0.3; filter:grayscale(1); }
 
-        /* ===== BOTTOM NAV ===== */
-        #bottomNav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            max-width: 480px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 8px 0 env(safe-area-inset-bottom, 8px) 0;
-            background: rgba(15, 10, 26, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            z-index: 50;
-            height: 68px;
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 10px;
-            font-weight: 500;
-            cursor: pointer;
-            padding: 4px 12px;
-            transition: var(--transition);
-            font-family: inherit;
-            position: relative;
-            min-width: 52px;
-        }
-        .nav-item i {
-            font-size: 20px;
-            transition: var(--transition);
-        }
-        .nav-item.active {
-            color: var(--primary-light);
-        }
-        .nav-item.active i {
-            transform: translateY(-2px);
-            filter: drop-shadow(0 0 12px rgba(124, 58, 237, 0.40));
-        }
-        .nav-item .nav-badge {
-            position: absolute;
-            top: 0;
-            right: 4px;
-            background: var(--accent-red);
-            color: #fff;
-            font-size: 9px;
-            font-weight: 700;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .nav-create {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #fff;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 24px rgba(124, 58, 237, 0.40);
-            transition: var(--transition);
-            margin-top: -16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .nav-create:hover {
-            transform: scale(1.06);
-            box-shadow: 0 8px 32px rgba(124, 58, 237, 0.50);
-        }
-        .nav-create:active {
-            transform: scale(0.94);
-        }
+    /* ---- Leaderboard ---- */
+    .lb-tabs { display:flex; gap:6px; background:rgba(255,255,255,0.04); border-radius:var(--radius-sm); padding:4px; margin-bottom:16px; }
+    .lb-tabs .lb-tab { flex:1; padding:8px 12px; border-radius:8px; border:none; background:transparent; color:var(--text-secondary); font-weight:500; font-size:13px; cursor:pointer; transition:var(--transition); font-family:inherit; }
+    .lb-tabs .lb-tab.active { background:var(--primary); color:#fff; box-shadow:0 4px 16px rgba(124,58,237,0.30); }
+    .lb-entry { display:flex; align-items:center; gap:14px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+    .lb-entry .rank { font-weight:700; font-size:16px; color:var(--text-muted); width:28px; text-align:center; }
+    .lb-entry .rank.gold { color:#F59E0B; }
+    .lb-entry .rank.silver { color:#94A3B8; }
+    .lb-entry .rank.bronze { color:#D97706; }
+    .lb-entry .info { flex:1; }
+    .lb-entry .info .name { font-weight:600; }
+    .lb-entry .info .detail { font-size:12px; color:var(--text-secondary); }
+    .lb-entry .xp { font-weight:600; color:var(--secondary); }
 
-        /* ===== CARDS ===== */
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--card-border);
-            border-radius: var(--radius);
-            padding: 16px 18px;
-            transition: var(--transition);
-        }
-        .card:hover {
-            border-color: rgba(255, 255, 255, 0.18);
-        }
-        .card-glass {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-        }
+    /* ---- Auth Modal ---- */
+    #authModal {
+      position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+      display:none; align-items:center; justify-content:center; z-index:200; padding:20px;
+    }
+    #authModal.open { display:flex; }
+    .auth-box { background:#1A1030; border:1px solid rgba(255,255,255,0.08); border-radius:28px; padding:2rem 1.8rem; max-width:380px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.6); }
+    .auth-box h2 { font-size:24px; font-weight:700; margin-bottom:4px; background:linear-gradient(135deg,#fff,#A78BFA); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .auth-box .sub { color:var(--text-secondary); font-size:14px; margin-bottom:20px; }
+    .auth-box .field { margin-bottom:16px; }
+    .auth-box .field label { display:block; font-size:13px; font-weight:500; color:var(--text-secondary); margin-bottom:4px; }
+    .auth-box .field input { width:100%; padding:12px 14px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.04); color:var(--text-primary); font-size:15px; font-family:inherit; outline:none; transition:var(--transition); }
+    .auth-box .field input:focus { border-color:var(--primary); background:rgba(255,255,255,0.06); box-shadow:0 0 0 3px rgba(124,58,237,0.15); }
+    .auth-box .actions { display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+    .auth-box .toggle-text { text-align:center; font-size:14px; color:var(--text-secondary); margin-top:14px; }
+    .auth-box .toggle-text a { color:var(--primary-light); cursor:pointer; font-weight:500; }
+    .auth-box .toggle-text a:hover { text-decoration:underline; }
+    .auth-box .close-auth { float:right; background:none; border:none; color:var(--text-muted); font-size:22px; cursor:pointer; margin-top:-12px; }
 
-        /* ===== HOME ===== */
-        .home-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0 16px;
-        }
-        .home-header h1 {
-            font-size: 24px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff, #A78BFA);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .home-header h1 i {
-            -webkit-text-fill-color: initial;
-            color: #F59E0B;
-        }
-        .home-header .badge-avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 18px;
-            cursor: pointer;
-            border: 2px solid rgba(255, 255, 255, 0.10);
-        }
-        .section-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin: 18px 0 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .section-title .see-all {
-            margin-left: auto;
-            font-size: 13px;
-            font-weight: 400;
-            color: var(--text-muted);
-            cursor: pointer;
-        }
-        .challenge-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--card-border);
-            border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 12px;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-        .challenge-card:hover {
-            border-color: rgba(255, 255, 255, 0.18);
-            transform: translateY(-2px);
-        }
-        .challenge-card .top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-        .challenge-card .creator {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-        }
-        .challenge-card .creator .avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-pink), var(--accent-orange));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 600;
-            color: #fff;
-        }
-        .challenge-card .timer {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--accent-orange);
-        }
-        .challenge-card .timer.warning {
-            color: var(--accent-red);
-            animation: blink 1s ease-in-out infinite;
-        }
-        @keyframes blink {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.4;
-            }
-        }
-        .challenge-card .title {
-            font-size: 17px;
-            font-weight: 600;
-            margin: 10px 0 6px;
-        }
-        .challenge-card .meta {
-            display: flex;
-            gap: 16px;
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-top: 8px;
-        }
-        .challenge-card .meta i {
-            margin-right: 4px;
-        }
-        .challenge-card .actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
-        .xp-badge {
-            background: rgba(6, 214, 160, 0.15);
-            color: var(--secondary);
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
+    /* ---- Avatar Picker Modal ---- */
+    #avatarModal {
+      position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+      display:none; align-items:center; justify-content:center; z-index:210; padding:20px;
+    }
+    #avatarModal.open { display:flex; }
+    .avatar-picker { background:#1A1030; border:1px solid rgba(255,255,255,0.08); border-radius:28px; padding:1.8rem; max-width:400px; width:100%; max-height:80vh; overflow-y:auto; }
+    .avatar-picker h3 { font-size:20px; font-weight:600; margin-bottom:12px; }
+    .avatar-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:12px 0; }
+    .avatar-option { width:100%; aspect-ratio:1; border-radius:50%; border:3px solid transparent; cursor:pointer; transition:var(--transition); display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:700; color:#fff; background:linear-gradient(135deg,var(--primary),var(--secondary)); }
+    .avatar-option:hover { transform:scale(1.06); }
+    .avatar-option.selected { border-color:var(--accent-orange); box-shadow:0 0 0 4px rgba(245,158,11,0.3); }
+    .avatar-option img { width:100%; height:100%; border-radius:50%; object-fit:cover; }
+    .avatar-upload { margin-top:12px; display:flex; gap:8px; align-items:center; }
+    .avatar-upload input[type="file"] { display:none; }
+    .avatar-upload .file-label { padding:8px 14px; background:rgba(255,255,255,0.06); border-radius:var(--radius-sm); cursor:pointer; font-size:13px; border:1px dashed rgba(255,255,255,0.15); text-align:center; flex:1; }
+    .avatar-upload .file-label:hover { background:rgba(255,255,255,0.10); }
+    .avatar-picker .actions { display:flex; gap:8px; margin-top:14px; }
+    .avatar-picker .actions .btn { flex:1; }
 
-        /* ===== CREATE ===== */
-        .create-form {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            padding-bottom: 20px;
-        }
-        .create-form label {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-            display: block;
-        }
-        .create-form input,
-        .create-form select,
-        .create-form textarea {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: var(--radius-sm);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(255, 255, 255, 0.04);
-            color: var(--text-primary);
-            font-size: 15px;
-            font-family: inherit;
-            transition: var(--transition);
-            outline: none;
-        }
-        .create-form input:focus,
-        .create-form select:focus,
-        .create-form textarea:focus {
-            border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.06);
-            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
-        }
-        .create-form textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        .create-form select option {
-            background: #1A1030;
-        }
-        .type-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-        .type-grid .type-btn {
-            padding: 10px 6px;
-            border-radius: var(--radius-sm);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-secondary);
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-            text-align: center;
-            font-family: inherit;
-        }
-        .type-grid .type-btn i {
-            display: block;
-            font-size: 20px;
-            margin-bottom: 4px;
-        }
-        .type-grid .type-btn.active {
-            border-color: var(--primary);
-            background: rgba(124, 58, 237, 0.12);
-            color: var(--text-primary);
-        }
-        .type-grid .type-btn:hover {
-            background: rgba(255, 255, 255, 0.06);
-        }
-        .timer-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-        }
-        .timer-grid .timer-btn {
-            padding: 8px 4px;
-            border-radius: var(--radius-sm);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-secondary);
-            font-size: 12px;
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: inherit;
-        }
-        .timer-grid .timer-btn.active {
-            border-color: var(--secondary);
-            background: rgba(6, 214, 160, 0.10);
-            color: var(--secondary);
-        }
-        .safety-warning {
-            background: rgba(239, 68, 68, 0.06);
-            border: 1px solid rgba(239, 68, 68, 0.15);
-            border-radius: var(--radius-sm);
-            padding: 12px 14px;
-            font-size: 13px;
-            color: var(--accent-red);
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-        .safety-warning i {
-            margin-top: 2px;
-        }
+    /* ---- Toast ---- */
+    .toast { position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:rgba(15,10,26,0.92); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius-sm); padding:12px 24px; font-size:14px; font-weight:500; color:var(--text-primary); z-index:200; opacity:0; transition:opacity 0.3s ease, transform 0.3s ease; pointer-events:none; max-width:90%; text-align:center; box-shadow:0 8px 40px rgba(0,0,0,0.40); }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-        /* ===== LIVE CHALLENGE ===== */
-        .live-timer {
-            font-size: 56px;
-            font-weight: 700;
-            text-align: center;
-            font-variant-numeric: tabular-nums;
-            background: linear-gradient(135deg, #fff, #A78BFA);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 2px;
-            animation: timerGlow 2s ease-in-out infinite alternate;
-        }
-        @keyframes timerGlow {
-            0% {
-                filter: drop-shadow(0 0 20px rgba(124, 58, 237, 0.2));
-            }
-            100% {
-                filter: drop-shadow(0 0 40px rgba(124, 58, 237, 0.5));
-            }
-        }
-        .live-progress {
-            width: 100%;
-            height: 6px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.06);
-            margin: 16px 0;
-            overflow: hidden;
-        }
-        .live-progress .bar {
-            height: 100%;
-            border-radius: 10px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            transition: width 1s linear;
-            width: 72%;
-        }
-        .live-participants {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin: 12px 0;
-        }
-        .live-participants .avatar-stack {
-            display: flex;
-        }
-        .live-participants .avatar-stack .mini-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 2px solid #0F0A1A;
-            margin-right: -8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 600;
-            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
-            color: #fff;
-        }
-        .live-participants .count {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-left: 4px;
-        }
-        .live-participants .count strong {
-            color: var(--text-primary);
-        }
+    /* ---- Responsive ---- */
+    @media (min-width:640px) { #app { border-radius:28px; margin-top:20px; height:calc(100vh - 40px); max-height:820px; } #bottomNav { border-radius:0 0 28px 28px; } }
+    @media (max-width:380px) { .type-grid { grid-template-columns:repeat(2,1fr); } .timer-grid { grid-template-columns:repeat(3,1fr); } .badge-grid { grid-template-columns:repeat(3,1fr); } }
 
-        /* ===== RESPONSE ===== */
-        .response-options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin: 16px 0;
-        }
-        .response-options .opt {
-            padding: 14px 16px;
-            border-radius: var(--radius-sm);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-primary);
-            font-size: 15px;
-            cursor: pointer;
-            transition: var(--transition);
-            text-align: left;
-            font-family: inherit;
-        }
-        .response-options .opt:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(255, 255, 255, 0.12);
-        }
-        .response-options .opt.selected {
-            border-color: var(--primary);
-            background: rgba(124, 58, 237, 0.12);
-        }
-        .response-options .opt .emoji {
-            margin-right: 10px;
-            font-size: 20px;
-        }
-
-        /* ===== RESULTS ===== */
-        .result-hero {
-            text-align: center;
-            padding: 20px 0;
-        }
-        .result-hero .trophy {
-            font-size: 64px;
-            animation: bounce 1.2s ease infinite;
-        }
-        @keyframes bounce {
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-12px);
-            }
-        }
-        .result-hero .big-text {
-            font-size: 24px;
-            font-weight: 700;
-            margin: 8px 0 4px;
-        }
-        .result-hero .sub {
-            color: var(--text-secondary);
-            font-size: 15px;
-        }
-        .result-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin: 16px 0;
-        }
-        .result-stats .stat-card {
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: var(--radius-sm);
-            padding: 14px;
-            text-align: center;
-        }
-        .result-stats .stat-card .num {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--primary-light);
-        }
-        .result-stats .stat-card .label {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 2px;
-        }
-
-        /* ===== PROFILE ===== */
-        .profile-header {
-            text-align: center;
-            padding: 16px 0;
-        }
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            margin: 0 auto 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 34px;
-            font-weight: 700;
-            color: #fff;
-            border: 3px solid rgba(255, 255, 255, 0.10);
-        }
-        .profile-name {
-            font-size: 22px;
-            font-weight: 700;
-        }
-        .profile-handle {
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-        .profile-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin: 16px 0;
-        }
-        .profile-stats .stat {
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: var(--radius-sm);
-            padding: 12px;
-            text-align: center;
-        }
-        .profile-stats .stat .num {
-            font-size: 20px;
-            font-weight: 700;
-        }
-        .profile-stats .stat .label {
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-top: 2px;
-        }
-        .badge-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin: 12px 0;
-        }
-        .badge-grid .badge-item {
-            text-align: center;
-            padding: 10px 4px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: var(--radius-sm);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .badge-grid .badge-item .icon {
-            font-size: 28px;
-        }
-        .badge-grid .badge-item .name {
-            font-size: 10px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-        .badge-grid .badge-item.locked {
-            opacity: 0.3;
-            filter: grayscale(1);
-        }
-
-        /* ===== LEADERBOARD ===== */
-        .lb-tabs {
-            display: flex;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: var(--radius-sm);
-            padding: 4px;
-            margin-bottom: 16px;
-        }
-        .lb-tabs .lb-tab {
-            flex: 1;
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: none;
-            background: transparent;
-            color: var(--text-secondary);
-            font-weight: 500;
-            font-size: 13px;
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: inherit;
-        }
-        .lb-tabs .lb-tab.active {
-            background: var(--primary);
-            color: #fff;
-            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.30);
-        }
-        .lb-entry {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .lb-entry .rank {
-            font-weight: 700;
-            font-size: 16px;
-            color: var(--text-muted);
-            width: 28px;
-            text-align: center;
-        }
-        .lb-entry .rank.gold {
-            color: #F59E0B;
-        }
-        .lb-entry .rank.silver {
-            color: #94A3B8;
-        }
-        .lb-entry .rank.bronze {
-            color: #D97706;
-        }
-        .lb-entry .info {
-            flex: 1;
-        }
-        .lb-entry .info .name {
-            font-weight: 600;
-        }
-        .lb-entry .info .detail {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-        .lb-entry .xp {
-            font-weight: 600;
-            color: var(--secondary);
-        }
-
-        /* ===== STORE ===== */
-        .store-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin: 12px 0;
-        }
-        .store-card {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: var(--radius-sm);
-            padding: 16px 12px;
-            text-align: center;
-            transition: var(--transition);
-        }
-        .store-card:hover {
-            border-color: rgba(255, 255, 255, 0.12);
-        }
-        .store-card .price {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--primary-light);
-            margin: 4px 0;
-        }
-        .store-card .name {
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .store-card .desc {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin: 4px 0 10px;
-        }
-        .store-card .badge-popular {
-            background: var(--accent-orange);
-            color: #fff;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 10px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 6px;
-        }
-
-        /* ===== MISC ===== */
-        .flex-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .gap-8 {
-            gap: 8px;
-        }
-        .gap-4 {
-            gap: 4px;
-        }
-        .mt-8 {
-            margin-top: 8px;
-        }
-        .mt-12 {
-            margin-top: 12px;
-        }
-        .mb-8 {
-            margin-bottom: 8px;
-        }
-        .text-center {
-            text-align: center;
-        }
-        .text-muted {
-            color: var(--text-secondary);
-        }
-        .text-sm {
-            font-size: 13px;
-        }
-        .w-full {
-            width: 100%;
-        }
-
-        /* ===== TOAST ===== */
-        .toast {
-            position: fixed;
-            bottom: 90px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(15, 10, 26, 0.92);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: var(--radius-sm);
-            padding: 12px 24px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-primary);
-            z-index: 200;
-            opacity: 0;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            pointer-events: none;
-            max-width: 90%;
-            text-align: center;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.40);
-        }
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (min-width: 640px) {
-            #app {
-                border-radius: 28px;
-                margin-top: 20px;
-                height: calc(100vh - 40px);
-                max-height: 820px;
-            }
-            #bottomNav {
-                border-radius: 0 0 28px 28px;
-            }
-        }
-        @media (max-width: 380px) {
-            .type-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .timer-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            .store-grid {
-                grid-template-columns: 1fr;
-            }
-            .badge-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        /* ===== RESPONSE LOCKED ANIMATION ===== */
-        .locked-in {
-            animation: lockPop 0.6s ease;
-        }
-        @keyframes lockPop {
-            0% {
-                transform: scale(1);
-            }
-            30% {
-                transform: scale(1.08);
-            }
-            60% {
-                transform: scale(0.96);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        /* ===== STATUS BAR SPACER ===== */
-        .status-spacer {
-            height: 8px;
-            flex-shrink: 0;
-        }
-
-        /* ===== NOTIFICATION DOT ===== */
-        .notif-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--accent-red);
-            display: inline-block;
-            margin-left: 4px;
-            animation: blink 1.2s ease-in-out infinite;
-        }
-
-        /* ===== CREATE ICON PULSE ===== */
-        .create-pulse {
-            animation: createPulse 2.4s ease-in-out infinite;
-        }
-        @keyframes createPulse {
-            0%,
-            100% {
-                box-shadow: 0 4px 24px rgba(124, 58, 237, 0.40);
-            }
-            50% {
-                box-shadow: 0 4px 48px rgba(124, 58, 237, 0.70), 0 0 80px rgba(6, 214, 160, 0.15);
-            }
-        }
-    </style>
+    .locked-in { animation:lockPop 0.6s ease; }
+    @keyframes lockPop { 0%{ transform:scale(1); } 30%{ transform:scale(1.08); } 60%{ transform:scale(0.96); } 100%{ transform:scale(1); } }
+    .create-pulse { animation:createPulse 2.4s ease-in-out infinite; }
+    @keyframes createPulse { 0%,100%{ box-shadow:0 4px 24px rgba(124,58,237,0.40); } 50%{ box-shadow:0 4px 48px rgba(124,58,237,0.70),0 0 80px rgba(6,214,160,0.15); } }
+  </style>
 </head>
 <body>
+<div id="app">
+  <!-- Ambient Orbs -->
+  <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div><div class="orb orb-4"></div>
 
-    <!-- ===== APP ROOT ===== -->
-    <div id="app">
+  <!-- Splash -->
+  <div id="splash">
+    <div class="splash-logo"><i class="fas fa-bolt"></i>SPLITSECOND</div>
+    <div class="splash-tagline">Challenge. Respond. Reveal.</div>
+    <div class="splash-loader"></div>
+  </div>
 
-        <!-- ===== AMBIENT ORBS ===== -->
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-        <div class="orb orb-4"></div>
+  <!-- Onboarding -->
+  <div id="onboarding" class="screen" style="display:none;">
+    <div class="onboard-slide active" data-index="0">
+      <div class="onboard-icon"><i class="fas fa-rocket"></i></div>
+      <div class="onboard-title">Everything Happens Fast.</div>
+      <div class="onboard-desc">Join real-time challenges before the clock runs out.</div>
+    </div>
+    <div class="onboard-slide" data-index="1">
+      <div class="onboard-icon"><i class="fas fa-users"></i></div>
+      <div class="onboard-title">Your Friends. Your Moment.</div>
+      <div class="onboard-desc">Create private challenges, polls and quick competitions.</div>
+    </div>
+    <div class="onboard-slide" data-index="2">
+      <div class="onboard-icon"><i class="fas fa-clock"></i></div>
+      <div class="onboard-title">Respond Before Time Ends.</div>
+      <div class="onboard-desc">Earn XP, badges and build your SplitSecond streak.</div>
+    </div>
+    <div class="onboard-dots">
+      <span class="onboard-dot active" data-index="0"></span>
+      <span class="onboard-dot" data-index="1"></span>
+      <span class="onboard-dot" data-index="2"></span>
+    </div>
+    <div class="onboard-actions">
+      <button class="btn btn-primary btn-glow" id="onboardGetStarted">🚀 Get Started</button>
+      <button class="btn btn-secondary" id="onboardSignIn">Sign In</button>
+    </div>
+  </div>
 
-        <!-- ===== SPLASH ===== -->
-        <div id="splash">
-            <div class="splash-logo">
-                <i class="fas fa-bolt"></i>SPLITSECOND
-            </div>
-            <div class="splash-tagline">Challenge. Respond. Reveal.</div>
-            <div class="splash-loader"></div>
+  <!-- Main App -->
+  <div id="mainApp" style="display: none; flex-direction: column; flex: 1;">
+
+    <!-- Screens -->
+    <div id="screen-home" class="screen active">
+      <div class="home-header">
+        <h1><i class="fas fa-bolt"></i> SplitSecond</h1>
+        <div class="badge-avatar" id="homeAvatar">JD</div>
+      </div>
+      <div class="section-title">⚡ Active Now <span class="see-all" data-target="screen-challenges">See all →</span></div>
+      <div id="activeChallenges"></div>
+
+      <div class="section-title">👥 Friends Activity <span class="see-all">→</span></div>
+      <div class="card" style="padding:14px 16px;">
+        <div style="display:flex;gap:12px;align-items:center;font-size:14px;">
+          <span style="font-size:28px;">🔥</span>
+          <div><strong>Alex</strong> just joined <span style="color:var(--primary-light);">Trivia Rush</span></div>
+          <span style="margin-left:auto;font-size:12px;color:var(--text-muted);">2m ago</span>
         </div>
-
-        <!-- ===== ONBOARDING ===== -->
-        <div id="onboarding" class="screen" style="display:none;">
-            <div class="onboard-slide active" data-index="0">
-                <div class="onboard-icon"><i class="fas fa-rocket"></i></div>
-                <div class="onboard-title">Everything Happens Fast.</div>
-                <div class="onboard-desc">Join real-time challenges before the clock runs out.</div>
-            </div>
-            <div class="onboard-slide" data-index="1">
-                <div class="onboard-icon"><i class="fas fa-users"></i></div>
-                <div class="onboard-title">Your Friends. Your Moment.</div>
-                <div class="onboard-desc">Create private challenges, polls and quick competitions.</div>
-            </div>
-            <div class="onboard-slide" data-index="2">
-                <div class="onboard-icon"><i class="fas fa-clock"></i></div>
-                <div class="onboard-title">Respond Before Time Ends.</div>
-                <div class="onboard-desc">Earn XP, badges and build your SplitSecond streak.</div>
-            </div>
-            <div class="onboard-dots">
-                <span class="onboard-dot active" data-index="0"></span>
-                <span class="onboard-dot" data-index="1"></span>
-                <span class="onboard-dot" data-index="2"></span>
-            </div>
-            <div class="onboard-actions">
-                <button class="btn btn-primary btn-glow" id="onboardGetStarted">🚀 Get Started</button>
-                <button class="btn btn-secondary" id="onboardSignIn">Sign In</button>
-            </div>
+        <div style="display:flex;gap:12px;align-items:center;font-size:14px;margin-top:8px;border-top:1px solid rgba(255,255,255,0.04);padding-top:8px;">
+          <span style="font-size:28px;">🏆</span>
+          <div><strong>Mia</strong> unlocked <span style="color:var(--accent-orange);">Fast Responder</span> badge</div>
+          <span style="margin-left:auto;font-size:12px;color:var(--text-muted);">15m ago</span>
         </div>
+      </div>
 
-        <!-- ===== MAIN APP (hidden until auth) ===== -->
-        <div id="mainApp" style="display:none;flex:1;display:none;flex-direction:column;">
-
-            <!-- ===== SCREENS ===== -->
-
-            <!-- HOME -->
-            <div id="screen-home" class="screen active">
-                <div class="home-header">
-                    <h1><i class="fas fa-bolt"></i> SplitSecond</h1>
-                    <div class="badge-avatar" id="homeAvatar">JD</div>
-                </div>
-
-                <div class="section-title">
-                    ⚡ Active Now
-                    <span class="see-all">See all →</span>
-                </div>
-
-                <div id="activeChallenges">
-                    <!-- injected by JS -->
-                </div>
-
-                <div class="section-title">
-                    👥 Friends Activity
-                    <span class="see-all">→</span>
-                </div>
-                <div class="card" style="padding:14px 16px;">
-                    <div style="display:flex;gap:12px;align-items:center;font-size:14px;">
-                        <span style="font-size:28px;">🔥</span>
-                        <div><strong>Alex</strong> just joined <span style="color:var(--primary-light);">Trivia Rush</span></div>
-                        <span style="margin-left:auto;font-size:12px;color:var(--text-muted);">2m ago</span>
-                    </div>
-                    <div style="display:flex;gap:12px;align-items:center;font-size:14px;margin-top:8px;border-top:1px solid rgba(255,255,255,0.04);padding-top:8px;">
-                        <span style="font-size:28px;">🏆</span>
-                        <div><strong>Mia</strong> unlocked <span style="color:var(--accent-orange);">Fast Responder</span> badge</div>
-                        <span style="margin-left:auto;font-size:12px;color:var(--text-muted);">15m ago</span>
-                    </div>
-                </div>
-
-                <div class="section-title">
-                    🔥 Trending Challenges
-                    <span class="see-all">→</span>
-                </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                    <div class="card" style="padding:12px;text-align:center;cursor:pointer;">
-                        <div style="font-size:28px;">🎬</div>
-                        <div style="font-size:13px;font-weight:500;margin-top:4px;">Movie Trivia</div>
-                        <div style="font-size:11px;color:var(--text-secondary);">1.2k played</div>
-                    </div>
-                    <div class="card" style="padding:12px;text-align:center;cursor:pointer;">
-                        <div style="font-size:28px;">🧩</div>
-                        <div style="font-size:13px;font-weight:500;margin-top:4px;">Emoji Puzzle</div>
-                        <div style="font-size:11px;color:var(--text-secondary);">890 played</div>
-                    </div>
-                    <div class="card" style="padding:12px;text-align:center;cursor:pointer;">
-                        <div style="font-size:28px;">📸</div>
-                        <div style="font-size:13px;font-weight:500;margin-top:4px;">Photo Prompt</div>
-                        <div style="font-size:11px;color:var(--text-secondary);">650 played</div>
-                    </div>
-                    <div class="card" style="padding:12px;text-align:center;cursor:pointer;">
-                        <div style="font-size:28px;">⚽</div>
-                        <div style="font-size:13px;font-weight:500;margin-top:4px;">Sports Predict</div>
-                        <div style="font-size:11px;color:var(--text-secondary);">430 played</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CHALLENGES LIST -->
-            <div id="screen-challenges" class="screen">
-                <div class="home-header" style="padding-bottom:8px;">
-                    <h1 style="font-size:22px;">⚡ All Challenges</h1>
-                    <span style="font-size:13px;color:var(--text-secondary);">8 active</span>
-                </div>
-                <div id="allChallengesList">
-                    <!-- injected by JS -->
-                </div>
-            </div>
-
-            <!-- CREATE -->
-            <div id="screen-create" class="screen">
-                <div class="home-header" style="padding-bottom:8px;">
-                    <h1 style="font-size:22px;">✨ Create Challenge</h1>
-                    <span style="font-size:13px;color:var(--text-secondary);">New</span>
-                </div>
-                <form class="create-form" id="createForm">
-                    <div>
-                        <label>Challenge Type</label>
-                        <div class="type-grid" id="typeGrid">
-                            <button type="button" class="type-btn active" data-type="quick"><i class="fas fa-bolt"></i>Quick</button>
-                            <button type="button" class="type-btn" data-type="poll"><i class="fas fa-poll"></i>Poll</button>
-                            <button type="button" class="type-btn" data-type="trivia"><i class="fas fa-brain"></i>Trivia</button>
-                            <button type="button" class="type-btn" data-type="photo"><i class="fas fa-image"></i>Photo</button>
-                            <button type="button" class="type-btn" data-type="prediction"><i class="fas fa-chart-line"></i>Predict</button>
-                            <button type="button" class="type-btn" data-type="team"><i class="fas fa-users"></i>Team</button>
-                        </div>
-                    </div>
-                    <div>
-                        <label>Title</label>
-                        <input type="text" placeholder="e.g. Who can solve this trivia?" id="challengeTitle" required />
-                    </div>
-                    <div>
-                        <label>Description</label>
-                        <textarea placeholder="What's the challenge about?" id="challengeDesc"></textarea>
-                    </div>
-                    <div>
-                        <label>Category</label>
-                        <select id="challengeCategory">
-                            <option value="Fun">🎉 Fun</option>
-                            <option value="Trivia">🧠 Trivia</option>
-                            <option value="Gaming">🎮 Gaming</option>
-                            <option value="Movies">🎬 Movies</option>
-                            <option value="Music">🎵 Music</option>
-                            <option value="Sports">⚽ Sports</option>
-                            <option value="Creativity">🎨 Creativity</option>
-                            <option value="Productivity">📋 Productivity</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Timer</label>
-                        <div class="timer-grid" id="timerGrid">
-                            <button type="button" class="timer-btn" data-sec="30">30s</button>
-                            <button type="button" class="timer-btn active" data-sec="60">60s</button>
-                            <button type="button" class="timer-btn" data-sec="120">2m</button>
-                            <button type="button" class="timer-btn" data-sec="300">5m</button>
-                            <button type="button" class="timer-btn" data-sec="600">10m</button>
-                            <button type="button" class="timer-btn" data-sec="1800">30m</button>
-                            <button type="button" class="timer-btn" data-sec="3600">1h</button>
-                            <button type="button" class="timer-btn" data-sec="7200">2h</button>
-                        </div>
-                    </div>
-                    <div>
-                        <label>Invite Group</label>
-                        <select id="challengeGroup">
-                            <option value="College Friends">🎓 College Friends</option>
-                            <option value="Gaming Squad">🎮 Gaming Squad</option>
-                            <option value="Office Team">💼 Office Team</option>
-                            <option value="Family">👨‍👩‍👧‍👦 Family</option>
-                            <option value="Weekend Crew">🌴 Weekend Crew</option>
-                        </select>
-                    </div>
-                    <div class="safety-warning">
-                        <i class="fas fa-shield-alt"></i>
-                        <span>Keep challenges fun, respectful and safe. No harmful or inappropriate content.</span>
-                    </div>
-                    <button type="submit" class="btn btn-success btn-glow" style="width:100%;">
-                        <i class="fas fa-rocket"></i> Publish Challenge
-                    </button>
-                </form>
-            </div>
-
-            <!-- LEADERBOARD -->
-            <div id="screen-leaderboard" class="screen">
-                <div class="home-header" style="padding-bottom:8px;">
-                    <h1 style="font-size:22px;">🏆 Leaderboard</h1>
-                    <span style="font-size:13px;color:var(--text-secondary);">Top players</span>
-                </div>
-                <div class="lb-tabs">
-                    <button class="lb-tab active" data-tab="friends">👥 Friends</button>
-                    <button class="lb-tab" data-tab="weekly">📅 Weekly</button>
-                    <button class="lb-tab" data-tab="global">🌍 Global</button>
-                </div>
-                <div id="leaderboardList">
-                    <!-- injected by JS -->
-                </div>
-            </div>
-
-            <!-- PROFILE -->
-            <div id="screen-profile" class="screen">
-                <div class="profile-header">
-                    <div class="profile-avatar" id="profileAvatar">JD</div>
-                    <div class="profile-name" id="profileName">Jake Dawson</div>
-                    <div class="profile-handle">@jakedawson • Level 12</div>
-                </div>
-                <div class="profile-stats">
-                    <div class="stat"><div class="num" id="profileXp">2,840</div><div class="label">XP</div></div>
-                    <div class="stat"><div class="num" id="profileStreak">🔥 7</div><div class="label">Day Streak</div></div>
-                    <div class="stat"><div class="num" id="profileWins">23</div><div class="label">Wins</div></div>
-                </div>
-                <div style="display:flex;gap:8px;margin:4px 0 12px;">
-                    <span class="xp-badge"><i class="fas fa-bolt"></i> 120 Sparks</span>
-                    <span class="xp-badge" style="background:rgba(236,72,153,0.12);color:#EC4899;"><i class="fas fa-crown"></i> Premium</span>
-                </div>
-                <div class="section-title" style="margin-top:4px;">
-                    🏅 Badges
-                    <span class="see-all">4 / 12</span>
-                </div>
-                <div class="badge-grid" id="badgeGrid">
-                    <div class="badge-item"><div class="icon">⚡</div><div class="name">Fast Responder</div></div>
-                    <div class="badge-item"><div class="icon">🧠</div><div class="name">Trivia Master</div></div>
-                    <div class="badge-item"><div class="icon">🎯</div><div class="name">Challenge Creator</div></div>
-                    <div class="badge-item"><div class="icon">🤝</div><div class="name">Team Player</div></div>
-                    <div class="badge-item locked"><div class="icon">🔥</div><div class="name">Streak Champ</div></div>
-                    <div class="badge-item locked"><div class="icon">🏆</div><div class="name">Top 10</div></div>
-                    <div class="badge-item locked"><div class="icon">🌟</div><div class="name">Star Player</div></div>
-                    <div class="badge-item locked"><div class="icon">💎</div><div class="name">Legend</div></div>
-                </div>
-                <button class="btn btn-secondary w-full" style="margin-top:8px;" id="profileEditBtn">
-                    <i class="fas fa-edit"></i> Edit Profile
-                </button>
-                <button class="btn btn-outline w-full" style="margin-top:8px;" id="profileSignOut">
-                    <i class="fas fa-sign-out-alt"></i> Sign Out
-                </button>
-            </div>
-
-            <!-- ===== BOTTOM NAV ===== -->
-            <div id="bottomNav">
-                <button class="nav-item active" data-screen="screen-home">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
-                </button>
-                <button class="nav-item" data-screen="screen-challenges">
-                    <i class="fas fa-bolt"></i>
-                    <span>Challenges</span>
-                    <span class="nav-badge">3</span>
-                </button>
-                <button class="nav-create create-pulse" id="navCreateBtn">
-                    <i class="fas fa-plus"></i>
-                </button>
-                <button class="nav-item" data-screen="screen-leaderboard">
-                    <i class="fas fa-trophy"></i>
-                    <span>Leaderboard</span>
-                </button>
-                <button class="nav-item" data-screen="screen-profile">
-                    <i class="fas fa-user"></i>
-                    <span>Profile</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- ===== TOAST ===== -->
-        <div id="toast" class="toast"></div>
-
+      <div class="section-title">🔥 Trending Challenges <span class="see-all">→</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="card" style="padding:12px;text-align:center;cursor:pointer;"><div style="font-size:28px;">🎬</div><div style="font-size:13px;font-weight:500;margin-top:4px;">Movie Trivia</div><div style="font-size:11px;color:var(--text-secondary);">1.2k played</div></div>
+        <div class="card" style="padding:12px;text-align:center;cursor:pointer;"><div style="font-size:28px;">🧩</div><div style="font-size:13px;font-weight:500;margin-top:4px;">Emoji Puzzle</div><div style="font-size:11px;color:var(--text-secondary);">890 played</div></div>
+        <div class="card" style="padding:12px;text-align:center;cursor:pointer;"><div style="font-size:28px;">📸</div><div style="font-size:13px;font-weight:500;margin-top:4px;">Photo Prompt</div><div style="font-size:11px;color:var(--text-secondary);">650 played</div></div>
+        <div class="card" style="padding:12px;text-align:center;cursor:pointer;"><div style="font-size:28px;">⚽</div><div style="font-size:13px;font-weight:500;margin-top:4px;">Sports Predict</div><div style="font-size:11px;color:var(--text-secondary);">430 played</div></div>
+      </div>
     </div>
 
-    <script>
-        // ================================================================
-        //  SPLITSECOND – FULL APP LOGIC
-        // ================================================================
+    <div id="screen-challenges" class="screen">
+      <div class="home-header" style="padding-bottom:8px;">
+        <h1 style="font-size:22px;">⚡ All Challenges</h1>
+        <span style="font-size:13px;color:var(--text-secondary);" id="challengeCount">6 active</span>
+      </div>
+      <div id="allChallengesList"></div>
+    </div>
 
-        (function() {
-            'use strict';
+    <div id="screen-create" class="screen">
+      <div class="home-header" style="padding-bottom:8px;">
+        <h1 style="font-size:22px;">✨ Create Challenge</h1>
+        <span style="font-size:13px;color:var(--text-secondary);">New</span>
+      </div>
+      <form class="create-form" id="createForm">
+        <div>
+          <label>Challenge Type</label>
+          <div class="type-grid" id="typeGrid">
+            <button type="button" class="type-btn active" data-type="quick"><i class="fas fa-bolt"></i>Quick</button>
+            <button type="button" class="type-btn" data-type="poll"><i class="fas fa-poll"></i>Poll</button>
+            <button type="button" class="type-btn" data-type="trivia"><i class="fas fa-brain"></i>Trivia</button>
+            <button type="button" class="type-btn" data-type="photo"><i class="fas fa-image"></i>Photo</button>
+            <button type="button" class="type-btn" data-type="prediction"><i class="fas fa-chart-line"></i>Predict</button>
+            <button type="button" class="type-btn" data-type="team"><i class="fas fa-users"></i>Team</button>
+          </div>
+        </div>
+        <div><label>Title</label><input type="text" placeholder="e.g. Who can solve this trivia?" id="challengeTitle" required /></div>
+        <div><label>Description</label><textarea placeholder="What's the challenge about?" id="challengeDesc"></textarea></div>
+        <div>
+          <label>Category</label>
+          <select id="challengeCategory">
+            <option value="Fun">🎉 Fun</option><option value="Trivia">🧠 Trivia</option>
+            <option value="Gaming">🎮 Gaming</option><option value="Movies">🎬 Movies</option>
+            <option value="Music">🎵 Music</option><option value="Sports">⚽ Sports</option>
+            <option value="Creativity">🎨 Creativity</option><option value="Productivity">📋 Productivity</option>
+          </select>
+        </div>
+        <div>
+          <label>Timer</label>
+          <div class="timer-grid" id="timerGrid">
+            <button type="button" class="timer-btn" data-sec="30">30s</button>
+            <button type="button" class="timer-btn active" data-sec="60">60s</button>
+            <button type="button" class="timer-btn" data-sec="120">2m</button>
+            <button type="button" class="timer-btn" data-sec="300">5m</button>
+            <button type="button" class="timer-btn" data-sec="600">10m</button>
+            <button type="button" class="timer-btn" data-sec="1800">30m</button>
+            <button type="button" class="timer-btn" data-sec="3600">1h</button>
+            <button type="button" class="timer-btn" data-sec="7200">2h</button>
+          </div>
+        </div>
+        <div>
+          <label>Invite Group</label>
+          <select id="challengeGroup">
+            <option value="College Friends">🎓 College Friends</option>
+            <option value="Gaming Squad">🎮 Gaming Squad</option>
+            <option value="Office Team">💼 Office Team</option>
+            <option value="Family">👨‍👩‍👧‍👦 Family</option>
+            <option value="Weekend Crew">🌴 Weekend Crew</option>
+          </select>
+        </div>
+        <div class="safety-warning"><i class="fas fa-shield-alt"></i><span>Keep challenges fun, respectful and safe. No harmful or inappropriate content.</span></div>
+        <button type="submit" class="btn btn-success btn-glow" style="width:100%;"><i class="fas fa-rocket"></i> Publish Challenge</button>
+      </form>
+    </div>
 
-            // ---------- DOM refs ----------
-            const $ = (sel) => document.querySelector(sel);
-            const $$ = (sel) => document.querySelectorAll(sel);
+    <div id="screen-leaderboard" class="screen">
+      <div class="home-header" style="padding-bottom:8px;">
+        <h1 style="font-size:22px;">🏆 Leaderboard</h1>
+        <span style="font-size:13px;color:var(--text-secondary);">Top players</span>
+      </div>
+      <div class="lb-tabs">
+        <button class="lb-tab active" data-tab="friends">👥 Friends</button>
+        <button class="lb-tab" data-tab="weekly">📅 Weekly</button>
+        <button class="lb-tab" data-tab="global">🌍 Global</button>
+      </div>
+      <div id="leaderboardList"></div>
+    </div>
 
-            const splash = $('#splash');
-            const onboarding = $('#onboarding');
-            const mainApp = $('#mainApp');
-            const toast = $('#toast');
-            const bottomNav = $('#bottomNav');
+    <div id="screen-profile" class="screen">
+      <div class="profile-header">
+        <div class="profile-avatar" id="profileAvatar">JD</div>
+        <div class="profile-name" id="profileName">Jake Dawson</div>
+        <div class="profile-handle" id="profileHandle">@jakedawson • Level 12</div>
+        <button class="btn btn-secondary btn-sm" style="margin-top:8px;" id="changeAvatarBtn"><i class="fas fa-camera"></i> Change Avatar</button>
+      </div>
+      <div class="profile-stats">
+        <div class="stat"><div class="num" id="profileXp">2,840</div><div class="label">XP</div></div>
+        <div class="stat"><div class="num" id="profileStreak">🔥 7</div><div class="label">Day Streak</div></div>
+        <div class="stat"><div class="num" id="profileWins">23</div><div class="label">Wins</div></div>
+      </div>
+      <div style="display:flex;gap:8px;margin:4px 0 12px;">
+        <span class="xp-badge"><i class="fas fa-bolt"></i> 120 Sparks</span>
+        <span class="xp-badge" style="background:rgba(236,72,153,0.12);color:#EC4899;"><i class="fas fa-crown"></i> Premium</span>
+      </div>
+      <div class="section-title" style="margin-top:4px;">🏅 Badges <span class="see-all">4 / 12</span></div>
+      <div class="badge-grid" id="badgeGrid">
+        <div class="badge-item"><div class="icon">⚡</div><div class="name">Fast Responder</div></div>
+        <div class="badge-item"><div class="icon">🧠</div><div class="name">Trivia Master</div></div>
+        <div class="badge-item"><div class="icon">🎯</div><div class="name">Challenge Creator</div></div>
+        <div class="badge-item"><div class="icon">🤝</div><div class="name">Team Player</div></div>
+        <div class="badge-item locked"><div class="icon">🔥</div><div class="name">Streak Champ</div></div>
+        <div class="badge-item locked"><div class="icon">🏆</div><div class="name">Top 10</div></div>
+        <div class="badge-item locked"><div class="icon">🌟</div><div class="name">Star Player</div></div>
+        <div class="badge-item locked"><div class="icon">💎</div><div class="name">Legend</div></div>
+      </div>
+      <button class="btn btn-secondary w-full" style="margin-top:8px;" id="profileEditBtn"><i class="fas fa-edit"></i> Edit Profile</button>
+      <button class="btn btn-outline w-full" style="margin-top:8px;" id="profileSignOut"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+    </div>
 
-            // ---------- State ----------
-            const state = {
-                isLoggedIn: false,
-                onboardIndex: 0,
-                selectedTimer: 60,
-                selectedType: 'quick',
-                challenges: [{
-                    id: 'c1',
-                    creator: 'Alex',
-                    title: 'WHO CAN SOLVE THIS TRIVIA?',
-                    desc: 'Answer the question before time runs out!',
-                    timer: 102,
-                    maxTimer: 120,
-                    participants: 5,
-                    totalInvited: 8,
-                    xp: 50,
-                    type: 'trivia',
-                    category: 'Trivia',
-                    group: 'College Friends',
-                    status: 'active',
-                    responses: 5,
-                }, {
-                    id: 'c2',
-                    creator: 'Mia',
-                    title: 'BEST GAMING SETUP',
-                    desc: 'Show us your gaming battle station!',
-                    timer: 47,
-                    maxTimer: 60,
-                    participants: 4,
-                    totalInvited: 6,
-                    xp: 35,
-                    type: 'photo',
-                    category: 'Gaming',
-                    group: 'Gaming Squad',
-                    status: 'active',
-                    responses: 4,
-                }, {
-                    id: 'c3',
-                    creator: 'Jordan',
-                    title: 'WHO WILL WIN TONIGHT?',
-                    desc: 'Predict the match outcome!',
-                    timer: 210,
-                    maxTimer: 300,
-                    participants: 7,
-                    totalInvited: 10,
-                    xp: 40,
-                    type: 'prediction',
-                    category: 'Sports',
-                    group: 'Weekend Crew',
-                    status: 'active',
-                    responses: 7,
-                }, {
-                    id: 'c4',
-                    creator: 'Sam',
-                    title: 'EMOJI MOVIE QUIZ',
-                    desc: 'Guess the movie from the emojis!',
-                    timer: 18,
-                    maxTimer: 30,
-                    participants: 3,
-                    totalInvited: 5,
-                    xp: 25,
-                    type: 'trivia',
-                    category: 'Movies',
-                    group: 'Family',
-                    status: 'active',
-                    responses: 3,
-                }, {
-                    id: 'c5',
-                    creator: 'Taylor',
-                    title: 'FUNNY DESK SETUP',
-                    desc: 'Post your funniest desk setup photo!',
-                    timer: 55,
-                    maxTimer: 120,
-                    participants: 6,
-                    totalInvited: 8,
-                    xp: 30,
-                    type: 'photo',
-                    category: 'Fun',
-                    group: 'Office Team',
-                    status: 'active',
-                    responses: 6,
-                }, {
-                    id: 'c6',
-                    creator: 'Riley',
-                    title: 'MUSIC GUESSING GAME',
-                    desc: 'Name that song from the lyrics!',
-                    timer: 82,
-                    maxTimer: 120,
-                    participants: 4,
-                    totalInvited: 7,
-                    xp: 45,
-                    type: 'trivia',
-                    category: 'Music',
-                    group: 'College Friends',
-                    status: 'active',
-                    responses: 4,
-                }],
-                leaderboard: [
-                    { name: 'Jake Dawson', handle: '@jakedawson', xp: 2840, rank: 1 },
-                    { name: 'Alex Rivera', handle: '@alexr', xp: 2310, rank: 2 },
-                    { name: 'Mia Chen', handle: '@miac', xp: 1980, rank: 3 },
-                    { name: 'Jordan Lee', handle: '@jordanl', xp: 1650, rank: 4 },
-                    { name: 'Sam Ortiz', handle: '@samortiz', xp: 1420, rank: 5 },
-                    { name: 'Taylor Kim', handle: '@taylork', xp: 1280, rank: 6 },
-                    { name: 'Riley Park', handle: '@rileyp', xp: 1150, rank: 7 },
-                    { name: 'Casey Jones', handle: '@caseyj', xp: 980, rank: 8 },
-                ],
-                user: {
-                    username: 'Jake Dawson',
-                    handle: '@jakedawson',
-                    xp: 2840,
-                    level: 12,
-                    streak: 7,
-                    wins: 23,
-                    sparks: 120,
-                    premium: true,
-                    avatar: 'JD',
-                },
-                timerInterval: null,
-            };
+    <!-- Bottom Nav -->
+    <div id="bottomNav">
+      <button class="nav-item active" data-screen="screen-home"><i class="fas fa-home"></i><span>Home</span></button>
+      <button class="nav-item" data-screen="screen-challenges"><i class="fas fa-bolt"></i><span>Challenges</span><span class="nav-badge">3</span></button>
+      <button class="nav-create create-pulse" id="navCreateBtn"><i class="fas fa-plus"></i></button>
+      <button class="nav-item" data-screen="screen-leaderboard"><i class="fas fa-trophy"></i><span>Leaderboard</span></button>
+      <button class="nav-item" data-screen="screen-profile"><i class="fas fa-user"></i><span>Profile</span></button>
+    </div>
+  </div>
 
-            // ---------- Helpers ----------
-            function formatTime(sec) {
-                const m = Math.floor(sec / 60);
-                const s = Math.floor(sec % 60);
-                return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
-            }
+  <!-- Auth Modal -->
+  <div id="authModal">
+    <div class="auth-box">
+      <button class="close-auth" id="closeAuth"><i class="fas fa-times"></i></button>
+      <h2 id="authTitle">Welcome Back</h2>
+      <div class="sub" id="authSub">Sign in to continue</div>
+      <form id="authForm">
+        <div class="field"><label>Email</label><input type="email" id="authEmail" placeholder="you@example.com" required /></div>
+        <div class="field"><label>Password</label><input type="password" id="authPassword" placeholder="••••••••" required minlength="4" /></div>
+        <div class="field" id="nameField" style="display:none;"><label>Display Name</label><input type="text" id="authName" placeholder="Your name" /></div>
+        <div class="actions">
+          <button type="submit" class="btn btn-primary btn-glow" id="authSubmit">Sign In</button>
+        </div>
+        <div class="toggle-text">
+          <span id="authToggleText">Don't have an account? <a id="authToggleLink">Sign Up</a></span>
+        </div>
+        <div style="margin-top:8px;text-align:center;"><button type="button" class="btn btn-secondary btn-sm" id="guestLogin">Continue as Guest</button></div>
+      </form>
+    </div>
+  </div>
 
-            function showToast(msg) {
-                toast.textContent = msg;
-                toast.classList.add('show');
-                clearTimeout(toast._hide);
-                toast._hide = setTimeout(() => toast.classList.remove('show'), 2600);
-            }
+  <!-- Avatar Picker Modal -->
+  <div id="avatarModal">
+    <div class="avatar-picker">
+      <h3>Choose Avatar</h3>
+      <div class="avatar-grid" id="avatarGrid"></div>
+      <div class="avatar-upload">
+        <span class="file-label" id="customAvatarLabel"><i class="fas fa-upload"></i> Upload custom image</span>
+        <input type="file" id="customAvatarInput" accept="image/*" />
+      </div>
+      <div class="actions">
+        <button class="btn btn-secondary" id="closeAvatarPicker">Cancel</button>
+        <button class="btn btn-primary" id="saveAvatar">Save</button>
+      </div>
+    </div>
+  </div>
 
-            function getRandomColor() {
-                const colors = ['#7C3AED', '#06D6A0', '#EC4899', '#F59E0B', '#3B82F6', '#EF4444', '#06B6D4', '#8B5CF6'];
-                return colors[Math.floor(Math.random() * colors.length)];
-            }
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+</div>
 
-            function getInitials(name) {
-                return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-            }
+<script>
+  (function() {
+    'use strict';
+    // ----- DOM refs -----
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
 
-            // ---------- Screen navigation ----------
-            function showScreen(id) {
-                $$('.screen').forEach(s => s.classList.remove('active'));
-                const target = document.getElementById(id);
-                if (target) target.classList.add('active');
-                // update nav
-                $$('.nav-item').forEach(n => n.classList.remove('active'));
-                const navBtn = document.querySelector(`.nav-item[data-screen="${id}"]`);
-                if (navBtn) navBtn.classList.add('active');
-                // if home, refresh challenges
-                if (id === 'screen-home') renderChallenges();
-                if (id === 'screen-challenges') renderAllChallenges();
-                if (id === 'screen-leaderboard') renderLeaderboard('friends');
-            }
+    const splash = $('#splash');
+    const onboarding = $('#onboarding');
+    const mainApp = $('#mainApp');
+    const toast = $('#toast');
+    const authModal = $('#authModal');
+    const avatarModal = $('#avatarModal');
 
-            // ---------- Render Challenges ----------
-            function renderChallenges() {
-                const container = $('#activeChallenges');
-                if (!container) return;
-                const active = state.challenges.filter(c => c.status === 'active');
-                if (active.length === 0) {
-                    container.innerHTML =
-                        `<div class="card" style="text-align:center;padding:24px;color:var(--text-secondary);">
-                            <div style="font-size:32px;margin-bottom:8px;">🚀</div>
-                            No active challenges right now. Create one!
-                        </div>`;
-                    return;
-                }
-                container.innerHTML = active.slice(0, 4).map(c => {
-                    const pct = (c.responses / c.totalInvited) * 100;
-                    const warn = c.timer < 10;
-                    return `
-                        <div class="challenge-card" data-id="${c.id}">
-                            <div class="top">
-                                <div class="creator">
-                                    <div class="avatar" style="background:${getRandomColor()};">${getInitials(c.creator)}</div>
-                                    <span>${c.creator} • ${c.group}</span>
-                                </div>
-                                <div class="timer ${warn ? 'warning' : ''}">
-                                    <i class="fas fa-clock"></i> ${formatTime(c.timer)}
-                                </div>
-                            </div>
-                            <div class="title">${c.title}</div>
-                            <div style="font-size:13px;color:var(--text-secondary);">${c.desc}</div>
-                            <div class="meta">
-                                <span><i class="fas fa-users"></i> ${c.responses} / ${c.totalInvited}</span>
-                                <span><i class="fas fa-tag"></i> ${c.category}</span>
-                                <span class="xp-badge">+${c.xp} XP</span>
-                            </div>
-                            <div class="actions">
-                                <button class="btn btn-primary btn-sm join-btn" data-id="${c.id}">JOIN NOW</button>
-                                <button class="btn btn-secondary btn-sm invite-btn" data-id="${c.id}"><i class="fas fa-share-alt"></i></button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
+    // ----- State -----
+    const state = {
+      isLoggedIn: false,
+      onboardIndex: 0,
+      selectedTimer: 60,
+      selectedType: 'quick',
+      user: {
+        username: 'Jake Dawson',
+        handle: '@jakedawson',
+        xp: 2840,
+        level: 12,
+        streak: 7,
+        wins: 23,
+        sparks: 120,
+        premium: true,
+        avatar: 'JD',
+        avatarType: 'initials',
+      },
+      challenges: [
+        { id:'c1', creator:'Alex', title:'WHO CAN SOLVE THIS TRIVIA?', desc:'Answer the question before time runs out!', timer:102, maxTimer:120, participants:5, totalInvited:8, xp:50, type:'trivia', category:'Trivia', group:'College Friends', status:'active', responses:5 },
+        { id:'c2', creator:'Mia', title:'BEST GAMING SETUP', desc:'Show us your gaming battle station!', timer:47, maxTimer:60, participants:4, totalInvited:6, xp:35, type:'photo', category:'Gaming', group:'Gaming Squad', status:'active', responses:4 },
+        { id:'c3', creator:'Jordan', title:'WHO WILL WIN TONIGHT?', desc:'Predict the match outcome!', timer:210, maxTimer:300, participants:7, totalInvited:10, xp:40, type:'prediction', category:'Sports', group:'Weekend Crew', status:'active', responses:7 },
+        { id:'c4', creator:'Sam', title:'EMOJI MOVIE QUIZ', desc:'Guess the movie from the emojis!', timer:18, maxTimer:30, participants:3, totalInvited:5, xp:25, type:'trivia', category:'Movies', group:'Family', status:'active', responses:3 },
+        { id:'c5', creator:'Taylor', title:'FUNNY DESK SETUP', desc:'Post your funniest desk setup photo!', timer:55, maxTimer:120, participants:6, totalInvited:8, xp:30, type:'photo', category:'Fun', group:'Office Team', status:'active', responses:6 },
+        { id:'c6', creator:'Riley', title:'MUSIC GUESSING GAME', desc:'Name that song from the lyrics!', timer:82, maxTimer:120, participants:4, totalInvited:7, xp:45, type:'trivia', category:'Music', group:'College Friends', status:'active', responses:4 },
+      ],
+      leaderboard: [
+        { name:'Jake Dawson', handle:'@jakedawson', xp:2840 },
+        { name:'Alex Rivera', handle:'@alexr', xp:2310 },
+        { name:'Mia Chen', handle:'@miac', xp:1980 },
+        { name:'Jordan Lee', handle:'@jordanl', xp:1650 },
+        { name:'Sam Ortiz', handle:'@samortiz', xp:1420 },
+        { name:'Taylor Kim', handle:'@taylork', xp:1280 },
+        { name:'Riley Park', handle:'@rileyp', xp:1150 },
+        { name:'Casey Jones', handle:'@caseyj', xp:980 },
+      ],
+      timerInterval: null,
+      authMode: 'signin',
+      selectedAvatar: null,
+    };
 
-                // event listeners
-                container.querySelectorAll('.join-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const id = btn.dataset.id;
-                        const challenge = state.challenges.find(c => c.id === id);
-                        if (challenge) {
-                            showToast(`⚡ Joined "${challenge.title}"! Respond before time runs out.`);
-                            // switch to live view
-                            showLiveChallenge(id);
-                        }
-                    });
-                });
-                container.querySelectorAll('.invite-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        showToast('📤 Share link copied to clipboard!');
-                    });
-                });
-                container.querySelectorAll('.challenge-card').forEach(card => {
-                    card.addEventListener('click', function() {
-                        const id = this.dataset.id;
-                        if (id) showLiveChallenge(id);
-                    });
-                });
-            }
+    // ----- Helpers -----
+    function formatTime(sec) { const m=Math.floor(sec/60); const s=Math.floor(sec%60); return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'); }
+    function showToast(msg) { toast.textContent=msg; toast.classList.add('show'); clearTimeout(toast._hide); toast._hide=setTimeout(()=>toast.classList.remove('show'),2600); }
+    function getRandomColor() { const colors=['#7C3AED','#06D6A0','#EC4899','#F59E0B','#3B82F6','#EF4444','#06B6D4','#8B5CF6']; return colors[Math.floor(Math.random()*colors.length)]; }
+    function getInitials(name) { return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
 
-            function renderAllChallenges() {
-                const container = $('#allChallengesList');
-                if (!container) return;
-                const active = state.challenges.filter(c => c.status === 'active');
-                if (active.length === 0) {
-                    container.innerHTML =
-                        `<div class="card" style="text-align:center;padding:24px;color:var(--text-secondary);">No challenges yet.</div>`;
-                    return;
-                }
-                container.innerHTML = active.map(c => {
-                    const warn = c.timer < 10;
-                    return `
-                        <div class="challenge-card" data-id="${c.id}">
-                            <div class="top">
-                                <div class="creator">
-                                    <div class="avatar" style="background:${getRandomColor()};">${getInitials(c.creator)}</div>
-                                    <span>${c.creator}</span>
-                                </div>
-                                <div class="timer ${warn ? 'warning' : ''}">
-                                    <i class="fas fa-clock"></i> ${formatTime(c.timer)}
-                                </div>
-                            </div>
-                            <div class="title">${c.title}</div>
-                            <div class="meta">
-                                <span><i class="fas fa-users"></i> ${c.responses}/${c.totalInvited}</span>
-                                <span><i class="fas fa-tag"></i> ${c.category}</span>
-                                <span class="xp-badge">+${c.xp} XP</span>
-                            </div>
-                            <button class="btn btn-primary btn-sm join-btn" data-id="${c.id}" style="margin-top:8px;">JOIN NOW</button>
-                        </div>
-                    `;
-                }).join('');
-                container.querySelectorAll('.join-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const id = btn.dataset.id;
-                        const challenge = state.challenges.find(c => c.id === id);
-                        if (challenge) {
-                            showToast(`⚡ Joined "${challenge.title}"!`);
-                            showLiveChallenge(id);
-                        }
-                    });
-                });
-            }
+    // ----- Screen navigation -----
+    function showScreen(id) {
+      $$('.screen').forEach(s=>s.classList.remove('active'));
+      const target=document.getElementById(id);
+      if (target) target.classList.add('active');
+      $$('.nav-item').forEach(n=>n.classList.remove('active'));
+      const navBtn=document.querySelector(`.nav-item[data-screen="${id}"]`);
+      if (navBtn) navBtn.classList.add('active');
+      if (id==='screen-home') renderChallenges();
+      if (id==='screen-challenges') renderAllChallenges();
+      if (id==='screen-leaderboard') renderLeaderboard('friends');
+    }
 
-            // ---------- Live Challenge ----------
-            let liveChallengeId = null;
+    // ----- Render Challenges -----
+    function renderChallenges() {
+      const container=$('#activeChallenges');
+      if (!container) return;
+      const active=state.challenges.filter(c=>c.status==='active');
+      if (active.length===0) {
+        container.innerHTML=`<div class="card" style="text-align:center;padding:24px;color:var(--text-secondary);"><div style="font-size:32px;margin-bottom:8px;">🚀</div>No active challenges right now. Create one!</div>`;
+        return;
+      }
+      container.innerHTML=active.slice(0,4).map(c=>{
+        const warn=c.timer<10;
+        return `<div class="challenge-card" data-id="${c.id}">
+          <div class="top"><div class="creator"><div class="avatar" style="background:${getRandomColor()};">${getInitials(c.creator)}</div><span>${c.creator} • ${c.group}</span></div><div class="timer ${warn?'warning':''}"><i class="fas fa-clock"></i> ${formatTime(c.timer)}</div></div>
+          <div class="title">${c.title}</div><div style="font-size:13px;color:var(--text-secondary);">${c.desc}</div>
+          <div class="meta"><span><i class="fas fa-users"></i> ${c.responses} / ${c.totalInvited}</span><span><i class="fas fa-tag"></i> ${c.category}</span><span class="xp-badge">+${c.xp} XP</span></div>
+          <div class="actions"><button class="btn btn-primary btn-sm join-btn" data-id="${c.id}">JOIN NOW</button><button class="btn btn-secondary btn-sm invite-btn" data-id="${c.id}"><i class="fas fa-share-alt"></i></button></div>
+        </div>`;
+      }).join('');
 
-            function showLiveChallenge(id) {
-                const challenge = state.challenges.find(c => c.id === id);
-                if (!challenge) return showToast('Challenge not found');
+      container.querySelectorAll('.join-btn').forEach(btn=>{
+        btn.addEventListener('click',e=>{ e.stopPropagation(); const id=btn.dataset.id; const challenge=state.challenges.find(c=>c.id===id); if(challenge){ showToast(`⚡ Joined "${challenge.title}"!`); showLiveChallenge(id); } });
+      });
+      container.querySelectorAll('.invite-btn').forEach(btn=>{
+        btn.addEventListener('click',e=>{ e.stopPropagation(); showToast('📤 Share link copied to clipboard!'); });
+      });
+      container.querySelectorAll('.challenge-card').forEach(card=>{
+        card.addEventListener('click',function(){ const id=this.dataset.id; if(id) showLiveChallenge(id); });
+      });
+    }
 
-                // build a temporary live view
-                const liveHTML = `
-                    <div id="liveScreen" class="screen active" style="padding:16px 16px 80px;display:flex;flex-direction:column;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                            <button id="liveBackBtn" style="background:none;border:none;color:var(--text-secondary);font-size:20px;cursor:pointer;">
-                                <i class="fas fa-arrow-left"></i>
-                            </button>
-                            <span style="font-size:13px;color:var(--text-secondary);">${challenge.group}</span>
-                        </div>
-                        <div style="text-align:center;margin:4px 0 8px;">
-                            <div class="live-timer" id="liveTimerDisplay">${formatTime(challenge.timer)}</div>
-                            <div style="font-size:13px;color:var(--text-secondary);">remaining</div>
-                        </div>
-                        <div class="live-progress"><div class="bar" id="liveProgressBar" style="width:${(challenge.timer/challenge.maxTimer)*100}%;"></div></div>
-                        <h2 style="font-size:22px;font-weight:700;margin:4px 0 2px;">${challenge.title}</h2>
-                        <p style="color:var(--text-secondary);font-size:14px;">${challenge.desc}</p>
-                        <div class="live-participants">
-                            <div class="avatar-stack">
-                                ${Array.from({length: Math.min(challenge.responses, 5)}, (_, i) => 
-                                    `<div class="mini-avatar" style="background:${getRandomColor()};">${String.fromCharCode(65+i)}</div>`
-                                ).join('')}
-                            </div>
-                            <div class="count"><strong>${challenge.responses}</strong> / ${challenge.totalInvited} responded</div>
-                            <span style="margin-left:auto;font-size:13px;color:var(--text-secondary);">+${challenge.xp} XP</span>
-                        </div>
-                        <div style="display:flex;gap:8px;margin:12px 0 16px;flex-wrap:wrap;">
-                            <button class="btn btn-primary" id="liveRespondBtn" style="flex:1;"><i class="fas fa-reply"></i> Respond</button>
-                            <button class="btn btn-secondary" id="liveInviteBtn"><i class="fas fa-share-alt"></i></button>
-                        </div>
-                        <div class="card" style="padding:14px;font-size:14px;color:var(--text-secondary);">
-                            <i class="fas fa-info-circle"></i> Challenge ends when timer hits zero. Be quick!
-                        </div>
-                        <button class="btn btn-outline w-full" id="liveResultsBtn" style="margin-top:12px;">
-                            <i class="fas fa-chart-bar"></i> View Results
-                        </button>
-                    </div>
-                `;
+    function renderAllChallenges() {
+      const container=$('#allChallengesList');
+      if (!container) return;
+      const active=state.challenges.filter(c=>c.status==='active');
+      if (active.length===0) { container.innerHTML=`<div class="card" style="text-align:center;padding:24px;color:var(--text-secondary);">No challenges yet.</div>`; return; }
+      container.innerHTML=active.map(c=>{
+        const warn=c.timer<10;
+        return `<div class="challenge-card" data-id="${c.id}">
+          <div class="top"><div class="creator"><div class="avatar" style="background:${getRandomColor()};">${getInitials(c.creator)}</div><span>${c.creator}</span></div><div class="timer ${warn?'warning':''}"><i class="fas fa-clock"></i> ${formatTime(c.timer)}</div></div>
+          <div class="title">${c.title}</div>
+          <div class="meta"><span><i class="fas fa-users"></i> ${c.responses}/${c.totalInvited}</span><span><i class="fas fa-tag"></i> ${c.category}</span><span class="xp-badge">+${c.xp} XP</span></div>
+          <button class="btn btn-primary btn-sm join-btn" data-id="${c.id}" style="margin-top:8px;">JOIN NOW</button>
+        </div>`;
+      }).join('');
+      container.querySelectorAll('.join-btn').forEach(btn=>{
+        btn.addEventListener('click',e=>{ e.stopPropagation(); const id=btn.dataset.id; const challenge=state.challenges.find(c=>c.id===id); if(challenge){ showToast(`⚡ Joined "${challenge.title}"!`); showLiveChallenge(id); } });
+      });
+      const countEl=document.getElementById('challengeCount');
+      if (countEl) countEl.textContent=active.length+' active';
+    }
 
-                // hide all screens, show live
-                $$('.screen').forEach(s => s.classList.remove('active'));
-                const temp = document.createElement('div');
-                temp.innerHTML = liveHTML;
-                const liveScreen = temp.firstElementChild;
-                document.getElementById('mainApp').appendChild(liveScreen);
+    // ----- Live Challenge -----
+    let liveChallengeId=null;
+    function showLiveChallenge(id) {
+      const challenge=state.challenges.find(c=>c.id===id);
+      if (!challenge) return showToast('Challenge not found');
+      const liveHTML=`
+        <div id="liveScreen" class="screen active" style="padding:16px 16px 80px;display:flex;flex-direction:column;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <button id="liveBackBtn" style="background:none;border:none;color:var(--text-secondary);font-size:20px;cursor:pointer;"><i class="fas fa-arrow-left"></i></button>
+            <span style="font-size:13px;color:var(--text-secondary);">${challenge.group}</span>
+          </div>
+          <div style="text-align:center;margin:4px 0 8px;">
+            <div class="live-timer" id="liveTimerDisplay">${formatTime(challenge.timer)}</div>
+            <div style="font-size:13px;color:var(--text-secondary);">remaining</div>
+          </div>
+          <div class="live-progress"><div class="bar" id="liveProgressBar" style="width:${(challenge.timer/challenge.maxTimer)*100}%;"></div></div>
+          <h2 style="font-size:22px;font-weight:700;margin:4px 0 2px;">${challenge.title}</h2>
+          <p style="color:var(--text-secondary);font-size:14px;">${challenge.desc}</p>
+          <div class="live-participants">
+            <div class="avatar-stack">${Array.from({length:Math.min(challenge.responses,5)},(_,i)=>`<div class="mini-avatar" style="background:${getRandomColor()};">${String.fromCharCode(65+i)}</div>`).join('')}</div>
+            <div class="count"><strong>${challenge.responses}</strong> / ${challenge.totalInvited} responded</div>
+            <span style="margin-left:auto;font-size:13px;color:var(--text-secondary);">+${challenge.xp} XP</span>
+          </div>
+          <div style="display:flex;gap:8px;margin:12px 0 16px;flex-wrap:wrap;">
+            <button class="btn btn-primary" id="liveRespondBtn" style="flex:1;"><i class="fas fa-reply"></i> Respond</button>
+            <button class="btn btn-secondary" id="liveInviteBtn"><i class="fas fa-share-alt"></i></button>
+          </div>
+          <div class="card" style="padding:14px;font-size:14px;color:var(--text-secondary);"><i class="fas fa-info-circle"></i> Challenge ends when timer hits zero. Be quick!</div>
+          <button class="btn btn-outline w-full" id="liveResultsBtn" style="margin-top:12px;"><i class="fas fa-chart-bar"></i> View Results</button>
+        </div>
+      `;
+      $$('.screen').forEach(s=>s.classList.remove('active'));
+      const temp=document.createElement('div'); temp.innerHTML=liveHTML;
+      const liveScreen=temp.firstElementChild;
+      document.getElementById('mainApp').appendChild(liveScreen);
 
-                // back
-                liveScreen.querySelector('#liveBackBtn').addEventListener('click', () => {
-                    liveScreen.remove();
-                    showScreen('screen-home');
-                    clearInterval(state.timerInterval);
-                });
+      liveScreen.querySelector('#liveBackBtn').addEventListener('click',()=>{ liveScreen.remove(); showScreen('screen-home'); clearInterval(state.timerInterval); });
+      liveScreen.querySelector('#liveRespondBtn').addEventListener('click',()=>{ showResponseScreen(challenge); });
+      liveScreen.querySelector('#liveInviteBtn').addEventListener('click',()=>{ showToast('📤 Invite link copied! Share with friends.'); });
+      liveScreen.querySelector('#liveResultsBtn').addEventListener('click',()=>{ showResults(challenge); });
 
-                // respond
-                liveScreen.querySelector('#liveRespondBtn').addEventListener('click', () => {
-                    showResponseScreen(challenge);
-                });
+      clearInterval(state.timerInterval);
+      let t=challenge.timer;
+      const timerDisplay=liveScreen.querySelector('#liveTimerDisplay');
+      const progressBar=liveScreen.querySelector('#liveProgressBar');
+      state.timerInterval=setInterval(()=>{
+        t-=1;
+        if (t<=0) { clearInterval(state.timerInterval); timerDisplay.textContent='00:00'; showToast('⏰ Time is up! Check the results.'); return; }
+        timerDisplay.textContent=formatTime(t);
+        const pct=(t/challenge.maxTimer)*100;
+        progressBar.style.width=Math.max(0,pct)+'%';
+        if (t<10) timerDisplay.style.color='#EF4444';
+      },1000);
+      liveChallengeId=id;
+    }
 
-                // invite
-                liveScreen.querySelector('#liveInviteBtn').addEventListener('click', () => {
-                    showToast('📤 Invite link copied! Share with friends.');
-                });
+    // ----- Response Screen -----
+    function showResponseScreen(challenge) {
+      const options=['Option A','Option B','Option C','Option D'];
+      const emojis=['🤔','😄','🔥','💡'];
+      const html=`
+        <div id="responseScreen" class="screen active" style="padding:16px 16px 80px;display:flex;flex-direction:column;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <button id="responseBackBtn" style="background:none;border:none;color:var(--text-secondary);font-size:20px;cursor:pointer;"><i class="fas fa-arrow-left"></i></button>
+            <span style="font-size:13px;color:var(--text-secondary);">${challenge.type.toUpperCase()}</span>
+          </div>
+          <h2 style="font-size:20px;font-weight:700;">${challenge.title}</h2>
+          <p style="color:var(--text-secondary);font-size:14px;margin:4px 0 12px;">${challenge.desc}</p>
+          <div style="display:flex;gap:12px;font-size:13px;color:var(--text-secondary);margin-bottom:12px;">
+            <span><i class="fas fa-clock"></i> ${formatTime(challenge.timer)} left</span>
+            <span><i class="fas fa-users"></i> ${challenge.responses} responded</span>
+          </div>
+          <div class="response-options" id="responseOptions">
+            ${options.map((opt,i)=>`<button class="opt" data-value="${opt}"><span class="emoji">${emojis[i]}</span> ${opt}</button>`).join('')}
+          </div>
+          <button class="btn btn-success btn-glow w-full" id="submitResponseBtn" style="margin-top:8px;"><i class="fas fa-check"></i> Submit Response</button>
+          <div style="margin-top:12px;text-align:center;font-size:12px;color:var(--text-muted);"><i class="fas fa-shield-alt"></i> Your response is safe & private</div>
+        </div>
+      `;
+      $$('.screen').forEach(s=>s.classList.remove('active'));
+      const temp=document.createElement('div'); temp.innerHTML=html;
+      const screen=temp.firstElementChild;
+      document.getElementById('mainApp').appendChild(screen);
 
-                // results
-                liveScreen.querySelector('#liveResultsBtn').addEventListener('click', () => {
-                    showResults(challenge);
-                });
+      let selected=null;
+      screen.querySelectorAll('.opt').forEach(btn=>{
+        btn.addEventListener('click',function(){ screen.querySelectorAll('.opt').forEach(b=>b.classList.remove('selected')); this.classList.add('selected'); selected=this.dataset.value; });
+      });
+      screen.querySelector('#responseBackBtn').addEventListener('click',()=>{ screen.remove(); const live=document.getElementById('liveScreen'); if(live) live.classList.add('active'); else showScreen('screen-home'); });
+      screen.querySelector('#submitResponseBtn').addEventListener('click',()=>{
+        if(!selected){ showToast('Please select an option first.'); return; }
+        const btn=screen.querySelector('#submitResponseBtn');
+        btn.innerHTML='<i class="fas fa-check-circle"></i> Response Locked In!';
+        btn.style.background='linear-gradient(135deg, #06D6A0, #059669)';
+        btn.disabled=true;
+        screen.querySelectorAll('.opt').forEach(b=>b.style.cursor='default');
+        showToast('✅ Your response has been recorded!');
+        challenge.responses+=1;
+        // Update user XP
+        state.user.xp += challenge.xp;
+        updateProfileUI();
+        setTimeout(()=>{ screen.remove(); const live=document.getElementById('liveScreen'); if(live) live.classList.add('active'); else showScreen('screen-home'); renderChallenges(); },1200);
+      });
+    }
 
-                // start countdown
-                clearInterval(state.timerInterval);
-                let t = challenge.timer;
-                const timerDisplay = liveScreen.querySelector('#liveTimerDisplay');
-                const progressBar = liveScreen.querySelector('#liveProgressBar');
+    // ----- Results -----
+    function showResults(challenge) {
+      const html=`
+        <div id="resultsScreen" class="screen active" style="padding:16px 16px 80px;display:flex;flex-direction:column;">
+          <div class="result-hero"><div class="trophy">🏆</div><div class="big-text">CHALLENGE COMPLETE</div><div class="sub">${challenge.title}</div><div style="margin-top:6px;font-size:15px;color:var(--secondary);"><i class="fas fa-bolt"></i> You earned +${challenge.xp} XP</div></div>
+          <div class="result-stats">
+            <div class="stat-card"><div class="num">${challenge.responses}</div><div class="label">Responses</div></div>
+            <div class="stat-card"><div class="num">${challenge.totalInvited}</div><div class="label">Invited</div></div>
+            <div class="stat-card"><div class="num">${Math.round((challenge.responses/challenge.totalInvited)*100)}%</div><div class="label">Participation</div></div>
+            <div class="stat-card"><div class="num">🏅</div><div class="label">New Badge</div></div>
+          </div>
+          <div class="card" style="padding:14px;text-align:center;"><div style="font-size:14px;color:var(--text-secondary);">Most Popular Answer</div><div style="font-size:18px;font-weight:600;margin:4px 0;">Option B <span style="color:var(--secondary);">(42%)</span></div><div style="font-size:13px;color:var(--text-muted);">"${challenge.desc}"</div></div>
+          <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;"><button class="btn btn-primary" style="flex:1;" id="resultShareBtn"><i class="fas fa-share-alt"></i> Share Result</button><button class="btn btn-secondary" style="flex:1;" id="resultHomeBtn"><i class="fas fa-home"></i> Home</button></div>
+          <button class="btn btn-outline w-full" style="margin-top:8px;" id="resultCreateBtn"><i class="fas fa-plus"></i> Create Another</button>
+        </div>
+      `;
+      $$('.screen').forEach(s=>s.classList.remove('active'));
+      const temp=document.createElement('div'); temp.innerHTML=html;
+      const screen=temp.firstElementChild;
+      document.getElementById('mainApp').appendChild(screen);
+      screen.querySelector('#resultShareBtn').addEventListener('click',()=>{ showToast('📤 Result shared with your friends!'); });
+      screen.querySelector('#resultHomeBtn').addEventListener('click',()=>{ screen.remove(); showScreen('screen-home'); });
+      screen.querySelector('#resultCreateBtn').addEventListener('click',()=>{ screen.remove(); document.querySelector('.nav-create')?.click(); });
+      const live=document.getElementById('liveScreen'); if(live) live.remove();
+      clearInterval(state.timerInterval);
+      const c=state.challenges.find(ch=>ch.id===challenge.id);
+      if(c) c.status='completed';
+      renderChallenges();
+    }
 
-                state.timerInterval = setInterval(() => {
-                    t -= 1;
-                    if (t <= 0) {
-                        clearInterval(state.timerInterval);
-                        timerDisplay.textContent = '00:00';
-                        showToast('⏰ Time is up! Check the results.');
-                        return;
-                    }
-                    timerDisplay.textContent = formatTime(t);
-                    const pct = (t / challenge.maxTimer) * 100;
-                    progressBar.style.width = Math.max(0, pct) + '%';
-                    if (t < 10) timerDisplay.style.color = '#EF4444';
-                }, 1000);
+    // ----- Leaderboard -----
+    let lbTab='friends';
+    function renderLeaderboard(tab) {
+      lbTab=tab||lbTab;
+      const container=$('#leaderboardList');
+      if(!container) return;
+      // Sort by XP descending
+      const data = [...state.leaderboard].sort((a,b) => b.xp - a.xp);
+      const html=data.map((entry,i)=>{
+        let rankClass='';
+        if(i===0) rankClass='gold'; else if(i===1) rankClass='silver'; else if(i===2) rankClass='bronze';
+        return `<div class="lb-entry"><div class="rank ${rankClass}">${i+1}</div><div class="info"><div class="name">${entry.name}</div><div class="detail">${entry.handle}</div></div><div class="xp">${entry.xp} XP</div></div>`;
+      }).join('');
+      container.innerHTML=html;
+    }
 
-                liveChallengeId = id;
-            }
+    // ----- Avatar Picker -----
+    const avatarPresets = [
+      { type:'emoji', value:'😎', label:'Cool' }, { type:'emoji', value:'🤩', label:'Star' },
+      { type:'emoji', value:'🔥', label:'Fire' }, { type:'emoji', value:'💪', label:'Strong' },
+      { type:'emoji', value:'🦄', label:'Unicorn' }, { type:'emoji', value:'🐉', label:'Dragon' },
+      { type:'emoji', value:'🎮', label:'Gamer' }, { type:'emoji', value:'📸', label:'Photo' },
+      { type:'initials', value:'JD', label:'Initials' }, { type:'initials', value:'AX', label:'AX' },
+      { type:'initials', value:'MZ', label:'MZ' }, { type:'initials', value:'RT', label:'RT' },
+    ];
+    function openAvatarPicker() {
+      const grid=document.getElementById('avatarGrid');
+      grid.innerHTML='';
+      avatarPresets.forEach((preset,idx)=>{
+        const div=document.createElement('div');
+        div.className='avatar-option';
+        if (preset.type==='emoji') div.textContent=preset.value;
+        else div.textContent=preset.value;
+        div.dataset.type=preset.type;
+        div.dataset.value=preset.value;
+        div.dataset.idx=idx;
+        if (state.selectedAvatar && state.selectedAvatar.value===preset.value && state.selectedAvatar.type===preset.type) {
+          div.classList.add('selected');
+        }
+        div.addEventListener('click',function(){
+          grid.querySelectorAll('.avatar-option').forEach(el=>el.classList.remove('selected'));
+          this.classList.add('selected');
+          state.selectedAvatar = { type:this.dataset.type, value:this.dataset.value };
+        });
+        grid.appendChild(div);
+      });
+      const input=document.getElementById('customAvatarInput');
+      input.value='';
+      avatarModal.classList.add('open');
+    }
 
-            // ---------- Response Screen ----------
-            function showResponseScreen(challenge) {
-                const options = ['Option A', 'Option B', 'Option C', 'Option D'];
-                const emojis = ['🤔', '😄', '🔥', '💡'];
-                const html = `
-                    <div id="responseScreen" class="screen active" style="padding:16px 16px 80px;display:flex;flex-direction:column;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                            <button id="responseBackBtn" style="background:none;border:none;color:var(--text-secondary);font-size:20px;cursor:pointer;">
-                                <i class="fas fa-arrow-left"></i>
-                            </button>
-                            <span style="font-size:13px;color:var(--text-secondary);">${challenge.type.toUpperCase()}</span>
-                        </div>
-                        <h2 style="font-size:20px;font-weight:700;">${challenge.title}</h2>
-                        <p style="color:var(--text-secondary);font-size:14px;margin:4px 0 12px;">${challenge.desc}</p>
-                        <div style="display:flex;gap:12px;font-size:13px;color:var(--text-secondary);margin-bottom:12px;">
-                            <span><i class="fas fa-clock"></i> ${formatTime(challenge.timer)} left</span>
-                            <span><i class="fas fa-users"></i> ${challenge.responses} responded</span>
-                        </div>
-                        <div class="response-options" id="responseOptions">
-                            ${options.map((opt, i) => `
-                                <button class="opt" data-value="${opt}">
-                                    <span class="emoji">${emojis[i]}</span> ${opt}
-                                </button>
-                            `).join('')}
-                        </div>
-                        <button class="btn btn-success btn-glow w-full" id="submitResponseBtn" style="margin-top:8px;">
-                            <i class="fas fa-check"></i> Submit Response
-                        </button>
-                        <div style="margin-top:12px;text-align:center;font-size:12px;color:var(--text-muted);">
-                            <i class="fas fa-shield-alt"></i> Your response is safe & private
-                        </div>
-                    </div>
-                `;
+    function applyAvatar(avatar) {
+      if (!avatar) return;
+      const u=state.user;
+      u.avatarType=avatar.type;
+      u.avatar=avatar.value;
+      updateProfileUI();
+      showToast('Avatar updated!');
+    }
 
-                $$('.screen').forEach(s => s.classList.remove('active'));
-                const temp = document.createElement('div');
-                temp.innerHTML = html;
-                const screen = temp.firstElementChild;
-                document.getElementById('mainApp').appendChild(screen);
+    function updateProfileUI() {
+      const u = state.user;
+      const avatarEl = document.getElementById('profileAvatar');
+      const homeAvatar = document.getElementById('homeAvatar');
+      
+      // Clear previous content
+      avatarEl.innerHTML = '';
+      homeAvatar.innerHTML = '';
+      
+      if (u.avatarType === 'image' && u.avatar.startsWith('data:image')) {
+        const img = document.createElement('img');
+        img.src = u.avatar;
+        avatarEl.appendChild(img);
+        
+        const homeImg = document.createElement('img');
+        homeImg.src = u.avatar;
+        homeImg.style.width = '100%';
+        homeImg.style.height = '100%';
+        homeImg.style.borderRadius = '50%';
+        homeImg.style.objectFit = 'cover';
+        homeAvatar.appendChild(homeImg);
+      } else {
+        avatarEl.textContent = u.avatar;
+        homeAvatar.textContent = u.avatar;
+      }
+      
+      document.getElementById('profileName').textContent = u.username;
+      document.getElementById('profileHandle').textContent = u.handle + ' • Level ' + u.level;
+      document.getElementById('profileXp').textContent = u.xp.toLocaleString();
+      document.getElementById('profileStreak').textContent = '🔥 ' + u.streak;
+      document.getElementById('profileWins').textContent = u.wins;
+    }
 
-                let selected = null;
-                screen.querySelectorAll('.opt').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        screen.querySelectorAll('.opt').forEach(b => b.classList.remove('selected'));
-                        this.classList.add('selected');
-                        selected = this.dataset.value;
-                    });
-                });
+    // ----- Auth -----
+    function showAuth(mode='signin') {
+      state.authMode=mode;
+      const title=document.getElementById('authTitle');
+      const sub=document.getElementById('authSub');
+      const submit=document.getElementById('authSubmit');
+      const toggleText=document.getElementById('authToggleText');
+      const toggleLink=document.getElementById('authToggleLink');
+      const nameField=document.getElementById('nameField');
+      if (mode==='signin') {
+        title.textContent='Welcome Back';
+        sub.textContent='Sign in to continue';
+        submit.textContent='Sign In';
+        toggleText.innerHTML='Don\'t have an account? <a id="authToggleLink">Sign Up</a>';
+        nameField.style.display='none';
+        document.getElementById('authName').required=false;
+      } else {
+        title.textContent='Create Account';
+        sub.textContent='Join SplitSecond';
+        submit.textContent='Sign Up';
+        toggleText.innerHTML='Already have an account? <a id="authToggleLink">Sign In</a>';
+        nameField.style.display='block';
+        document.getElementById('authName').required=true;
+      }
+      document.getElementById('authToggleLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        const newMode = state.authMode==='signin' ? 'signup' : 'signin';
+        showAuth(newMode);
+      });
+      authModal.classList.add('open');
+    }
 
-                screen.querySelector('#responseBackBtn').addEventListener('click', () => {
-                    screen.remove();
-                    // re-show live
-                    const live = document.getElementById('liveScreen');
-                    if (live) live.classList.add('active');
-                    else showScreen('screen-home');
-                });
+    function closeAuth() { authModal.classList.remove('open'); }
 
-                screen.querySelector('#submitResponseBtn').addEventListener('click', () => {
-                    if (!selected) {
-                        showToast('Please select an option first.');
-                        return;
-                    }
-                    // animate
-                    const btn = screen.querySelector('#submitResponseBtn');
-                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Response Locked In!';
-                    btn.style.background = 'linear-gradient(135deg, #06D6A0, #059669)';
-                    btn.disabled = true;
-                    screen.querySelectorAll('.opt').forEach(b => b.style.cursor = 'default');
-                    showToast('✅ Your response has been recorded!');
-                    // update challenge
-                    challenge.responses += 1;
-                    setTimeout(() => {
-                        screen.remove();
-                        // go back to live
-                        const live = document.getElementById('liveScreen');
-                        if (live) live.classList.add('active');
-                        else showScreen('screen-home');
-                        renderChallenges();
-                    }, 1200);
-                });
-            }
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email=document.getElementById('authEmail').value.trim();
+      const password=document.getElementById('authPassword').value;
+      const name=document.getElementById('authName').value.trim();
+      if (state.authMode==='signup' && !name) {
+        showToast('Please enter your display name.');
+        return;
+      }
+      const u=state.user;
+      if (state.authMode==='signup') {
+        u.username=name || 'User';
+        u.handle='@'+u.username.toLowerCase().replace(/\s/g,'');
+        u.avatar=getInitials(u.username);
+        u.avatarType='initials';
+        showToast('🎉 Account created! Welcome '+u.username);
+      } else {
+        showToast('👋 Welcome back, '+u.username);
+      }
+      closeAuth();
+      login();
+    }
 
-            // ---------- Results Screen ----------
-            function showResults(challenge) {
-                const html = `
-                    <div id="resultsScreen" class="screen active" style="padding:16px 16px 80px;display:flex;flex-direction:column;">
-                        <div class="result-hero">
-                            <div class="trophy">🏆</div>
-                            <div class="big-text">CHALLENGE COMPLETE</div>
-                            <div class="sub">${challenge.title}</div>
-                            <div style="margin-top:6px;font-size:15px;color:var(--secondary);">
-                                <i class="fas fa-bolt"></i> You earned +${challenge.xp} XP
-                            </div>
-                        </div>
-                        <div class="result-stats">
-                            <div class="stat-card"><div class="num">${challenge.responses}</div><div class="label">Responses</div></div>
-                            <div class="stat-card"><div class="num">${challenge.totalInvited}</div><div class="label">Invited</div></div>
-                            <div class="stat-card"><div class="num">${Math.round((challenge.responses/challenge.totalInvited)*100)}%</div><div class="label">Participation</div></div>
-                            <div class="stat-card"><div class="num">🏅</div><div class="label">New Badge</div></div>
-                        </div>
-                        <div class="card" style="padding:14px;text-align:center;">
-                            <div style="font-size:14px;color:var(--text-secondary);">Most Popular Answer</div>
-                            <div style="font-size:18px;font-weight:600;margin:4px 0;">Option B <span style="color:var(--secondary);">(42%)</span></div>
-                            <div style="font-size:13px;color:var(--text-muted);">"${challenge.desc}"</div>
-                        </div>
-                        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
-                            <button class="btn btn-primary" style="flex:1;" id="resultShareBtn"><i class="fas fa-share-alt"></i> Share Result</button>
-                            <button class="btn btn-secondary" style="flex:1;" id="resultHomeBtn"><i class="fas fa-home"></i> Home</button>
-                        </div>
-                        <button class="btn btn-outline w-full" style="margin-top:8px;" id="resultCreateBtn">
-                            <i class="fas fa-plus"></i> Create Another
-                        </button>
-                    </div>
-                `;
+    function login() {
+      state.isLoggedIn=true;
+      onboarding.style.display='none';
+      mainApp.style.display='flex';
+      updateProfileUI();
+      renderChallenges();
+      renderLeaderboard('friends');
+      showToast('👋 Welcome, '+state.user.username);
+    }
 
-                $$('.screen').forEach(s => s.classList.remove('active'));
-                const temp = document.createElement('div');
-                temp.innerHTML = html;
-                const screen = temp.firstElementChild;
-                document.getElementById('mainApp').appendChild(screen);
+    function guestLogin() {
+      state.user.username='Guest';
+      state.user.handle='@guest';
+      state.user.avatar='👤';
+      state.user.avatarType='emoji';
+      closeAuth();
+      login();
+    }
 
-                screen.querySelector('#resultShareBtn').addEventListener('click', () => {
-                    showToast('📤 Result shared with your friends!');
-                });
-                screen.querySelector('#resultHomeBtn').addEventListener('click', () => {
-                    screen.remove();
-                    showScreen('screen-home');
-                });
-                screen.querySelector('#resultCreateBtn').addEventListener('click', () => {
-                    screen.remove();
-                    document.querySelector('.nav-create')?.click();
-                });
+    // ----- Init -----
+    function init() {
+      // Splash
+      setTimeout(()=>{
+        splash.classList.add('hidden');
+        setTimeout(()=>{ splash.style.display='none'; onboarding.style.display='flex'; },800);
+      },2200);
 
-                // remove live if exists
-                const live = document.getElementById('liveScreen');
-                if (live) live.remove();
-                clearInterval(state.timerInterval);
-                // mark challenge as completed
-                const c = state.challenges.find(ch => ch.id === challenge.id);
-                if (c) c.status = 'completed';
-                renderChallenges();
-            }
+      // Onboarding dots
+      $$('.onboard-dot').forEach(dot=>{
+        dot.addEventListener('click',function(){ showOnboardSlide(parseInt(this.dataset.index)); });
+      });
+      function showOnboardSlide(index) {
+        const slides=$$('.onboard-slide');
+        const dots=$$('.onboard-dot');
+        slides.forEach((s,i)=>s.classList.toggle('active',i===index));
+        dots.forEach((d,i)=>d.classList.toggle('active',i===index));
+        state.onboardIndex=index;
+      }
 
-            // ---------- Leaderboard ----------
-            let lbTab = 'friends';
+      document.getElementById('onboardGetStarted').addEventListener('click',()=>{ showAuth('signup'); });
+      document.getElementById('onboardSignIn').addEventListener('click',()=>{ showAuth('signin'); });
 
-            function renderLeaderboard(tab) {
-                lbTab = tab || lbTab;
-                const container = $('#leaderboardList');
-                if (!container) return;
-                const data = state.leaderboard;
-                const html = data.map((entry, i) => {
-                    let rankClass = '';
-                    if (i === 0) rankClass = 'gold';
-                    else if (i === 1) rankClass = 'silver';
-                    else if (i === 2) rankClass = 'bronze';
-                    return `
-                        <div class="lb-entry">
-                            <div class="rank ${rankClass}">${i + 1}</div>
-                            <div class="info">
-                                <div class="name">${entry.name}</div>
-                                <div class="detail">${entry.handle}</div>
-                            </div>
-                            <div class="xp">${entry.xp} XP</div>
-                        </div>
-                    `;
-                }).join('');
-                container.innerHTML = html;
-            }
+      // Auth modal events
+      document.getElementById('closeAuth').addEventListener('click', closeAuth);
+      document.getElementById('authForm').addEventListener('submit', handleAuthSubmit);
+      document.getElementById('guestLogin').addEventListener('click', guestLogin);
+      authModal.addEventListener('click', function(e){ if(e.target===this) closeAuth(); });
 
-            // ---------- Onboarding ----------
-            function showOnboardSlide(index) {
-                const slides = $$('.onboard-slide');
-                const dots = $$('.onboard-dot');
-                slides.forEach((s, i) => s.classList.toggle('active', i === index));
-                dots.forEach((d, i) => d.classList.toggle('active', i === index));
-                state.onboardIndex = index;
-            }
+      // Nav
+      $$('.nav-item').forEach(item=>{
+        item.addEventListener('click',function(){ const screen=this.dataset.screen; if(screen) showScreen(screen); });
+      });
+      document.getElementById('navCreateBtn').addEventListener('click',()=>{ showScreen('screen-create'); });
 
-            // ---------- Auth ----------
-            function login() {
-                state.isLoggedIn = true;
-                onboarding.style.display = 'none';
-                mainApp.style.display = 'flex';
-                // update profile
-                const u = state.user;
-                document.getElementById('profileName').textContent = u.username;
-                document.getElementById('profileAvatar').textContent = u.avatar;
-                document.getElementById('homeAvatar').textContent = u.avatar;
-                document.getElementById('profileXp').textContent = u.xp.toLocaleString();
-                document.getElementById('profileStreak').textContent = '🔥 ' + u.streak;
-                document.getElementById('profileWins').textContent = u.wins;
-                renderChallenges();
-                renderLeaderboard('friends');
-                showToast('👋 Welcome back, ' + u.username + '!');
-            }
+      // See all links
+      $$('.see-all').forEach(el=>{
+        el.addEventListener('click',function(e){
+          const target=this.dataset.target;
+          if (target) { showScreen(target); }
+          else { showToast('More content coming soon!'); }
+        });
+      });
 
-            // ---------- Init ----------
-            function init() {
-                // Splash
-                setTimeout(() => {
-                    splash.classList.add('hidden');
-                    setTimeout(() => {
-                        splash.style.display = 'none';
-                        onboarding.style.display = 'flex';
-                    }, 800);
-                }, 2200);
+      // Create form
+      const form=document.getElementById('createForm');
+      form.addEventListener('submit',function(e){
+        e.preventDefault();
+        const title=document.getElementById('challengeTitle').value.trim();
+        if(!title){ showToast('Please enter a challenge title.'); return; }
+        const desc=document.getElementById('challengeDesc').value.trim()||'A new challenge!';
+        const category=document.getElementById('challengeCategory').value;
+        const group=document.getElementById('challengeGroup').value;
+        const type=state.selectedType;
+        const timer=state.selectedTimer;
+        const unsafe=['kill','die','hurt','pain','danger','illegal','hack','steal','weapon','bomb','suicide'];
+        const lower=(title+' '+desc).toLowerCase();
+        for(const word of unsafe){ if(lower.includes(word)){ showToast('⛔ This challenge contains unsafe content. Please revise.'); return; } }
+        const newChallenge={
+          id:'c'+Date.now(),
+          creator:state.user.username,
+          title:title.toUpperCase(),
+          desc:desc,
+          timer:timer,
+          maxTimer:timer,
+          participants:0,
+          totalInvited:6,
+          xp:Math.floor(Math.random()*40)+20,
+          type:type,
+          category:category,
+          group:group,
+          status:'active',
+          responses:0,
+        };
+        state.challenges.unshift(newChallenge);
+        showToast('🚀 Challenge published! Share with friends.');
+        form.reset();
+        document.querySelectorAll('.timer-btn').forEach(b=>b.classList.remove('active'));
+        document.querySelector('.timer-btn[data-sec="60"]').classList.add('active');
+        state.selectedTimer=60;
+        renderChallenges();
+        showScreen('screen-home');
+      });
 
-                // Onboard dots
-                $$('.onboard-dot').forEach(dot => {
-                    dot.addEventListener('click', function() {
-                        showOnboardSlide(parseInt(this.dataset.index));
-                    });
-                });
+      // Type buttons
+      $$('.type-btn').forEach(btn=>{
+        btn.addEventListener('click',function(){ $$('.type-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active'); state.selectedType=this.dataset.type; });
+      });
+      // Timer buttons
+      $$('.timer-btn').forEach(btn=>{
+        btn.addEventListener('click',function(){ $$('.timer-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active'); state.selectedTimer=parseInt(this.dataset.sec); });
+      });
 
-                document.getElementById('onboardGetStarted').addEventListener('click', login);
-                document.getElementById('onboardSignIn').addEventListener('click', login);
+      // Leaderboard tabs
+      $$('.lb-tab').forEach(tab=>{
+        tab.addEventListener('click',function(){ $$('.lb-tab').forEach(t=>t.classList.remove('active')); this.classList.add('active'); renderLeaderboard(this.dataset.tab); });
+      });
 
-                // Nav
-                $$('.nav-item').forEach(item => {
-                    item.addEventListener('click', function() {
-                        const screen = this.dataset.screen;
-                        if (screen) showScreen(screen);
-                    });
-                });
+      // Profile
+      document.getElementById('profileSignOut').addEventListener('click',()=>{
+        if(confirm('Sign out?')){ state.isLoggedIn=false; mainApp.style.display='none'; onboarding.style.display='flex'; showToast('Signed out.'); }
+      });
+      document.getElementById('profileEditBtn').addEventListener('click',()=>{ showToast('✏️ Edit profile coming soon!'); });
 
-                // Create button
-                document.getElementById('navCreateBtn').addEventListener('click', () => {
-                    showScreen('screen-create');
-                });
+      // Avatar picker
+      document.getElementById('changeAvatarBtn').addEventListener('click', openAvatarPicker);
+      document.getElementById('closeAvatarPicker').addEventListener('click', ()=>{ avatarModal.classList.remove('open'); });
+      document.getElementById('saveAvatar').addEventListener('click', ()=>{
+        if (state.selectedAvatar) {
+          applyAvatar(state.selectedAvatar);
+          avatarModal.classList.remove('open');
+        } else {
+          showToast('Please select an avatar or upload an image.');
+        }
+      });
+      // Custom image upload
+      const fileInput=document.getElementById('customAvatarInput');
+      const fileLabel=document.getElementById('customAvatarLabel');
+      fileLabel.addEventListener('click',()=>{ fileInput.click(); });
+      fileInput.addEventListener('change', function(e) {
+        const file=this.files[0];
+        if (!file) return;
+        const reader=new FileReader();
+        reader.onload=function(ev) {
+          const dataUrl=ev.target.result;
+          state.selectedAvatar = { type:'image', value:dataUrl };
+          // Visual feedback: add to grid and select
+          const grid=document.getElementById('avatarGrid');
+          grid.querySelectorAll('.avatar-option').forEach(el=>el.classList.remove('selected'));
+          const div=document.createElement('div');
+          div.className='avatar-option selected';
+          const img=document.createElement('img');
+          img.src=dataUrl;
+          img.style.width='100%'; img.style.height='100%'; img.style.borderRadius='50%'; img.style.objectFit='cover';
+          div.appendChild(img);
+          div.dataset.type='image';
+          div.dataset.value=dataUrl;
+          grid.appendChild(div);
+          showToast('Image loaded! Press Save to apply.');
+        };
+        reader.readAsDataURL(file);
+      });
 
-                // Create form
-                const form = document.getElementById('createForm');
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const title = document.getElementById('challengeTitle').value.trim();
-                    if (!title) {
-                        showToast('Please enter a challenge title.');
-                        return;
-                    }
-                    const desc = document.getElementById('challengeDesc').value.trim() || 'A new challenge!';
-                    const category = document.getElementById('challengeCategory').value;
-                    const group = document.getElementById('challengeGroup').value;
-                    const type = state.selectedType;
-                    const timer = state.selectedTimer;
+      document.getElementById('profileAvatar').addEventListener('click', openAvatarPicker);
+      avatarModal.addEventListener('click', function(e){ if(e.target===this) avatarModal.classList.remove('open'); });
+      toast.addEventListener('click', ()=>toast.classList.remove('show'));
+      window.addEventListener('beforeunload', ()=>clearInterval(state.timerInterval));
+    }
 
-                    // safety check
-                    const unsafe = ['kill', 'die', 'hurt', 'pain', 'danger', 'illegal', 'hack', 'steal', 'weapon', 'bomb',
-                        'suicide'
-                    ];
-                    const lower = (title + ' ' + desc).toLowerCase();
-                    for (const word of unsafe) {
-                        if (lower.includes(word)) {
-                            showToast('⛔ This challenge contains unsafe content. Please revise.');
-                            return;
-                        }
-                    }
-
-                    const newChallenge = {
-                        id: 'c' + Date.now(),
-                        creator: state.user.username,
-                        title: title.toUpperCase(),
-                        desc: desc,
-                        timer: timer,
-                        maxTimer: timer,
-                        participants: 0,
-                        totalInvited: 6,
-                        xp: Math.floor(Math.random() * 40) + 20,
-                        type: type,
-                        category: category,
-                        group: group,
-                        status: 'active',
-                        responses: 0,
-                    };
-                    state.challenges.unshift(newChallenge);
-                    showToast('🚀 Challenge published! Share with friends.');
-                    form.reset();
-                    document.querySelectorAll('.timer-btn').forEach(b => b.classList.remove('active'));
-                    document.querySelector('.timer-btn[data-sec="60"]').classList.add('active');
-                    state.selectedTimer = 60;
-                    renderChallenges();
-                    showScreen('screen-home');
-                });
-
-                // Type buttons
-                $$('.type-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        $$('.type-btn').forEach(b => b.classList.remove('active'));
-                        this.classList.add('active');
-                        state.selectedType = this.dataset.type;
-                    });
-                });
-
-                // Timer buttons
-                $$('.timer-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        $$('.timer-btn').forEach(b => b.classList.remove('active'));
-                        this.classList.add('active');
-                        state.selectedTimer = parseInt(this.dataset.sec);
-                    });
-                });
-
-                // Leaderboard tabs
-                $$('.lb-tab').forEach(tab => {
-                    tab.addEventListener('click', function() {
-                        $$('.lb-tab').forEach(t => t.classList.remove('active'));
-                        this.classList.add('active');
-                        renderLeaderboard(this.dataset.tab);
-                    });
-                });
-
-                // Profile sign out
-                document.getElementById('profileSignOut').addEventListener('click', () => {
-                    if (confirm('Sign out?')) {
-                        state.isLoggedIn = false;
-                        mainApp.style.display = 'none';
-                        onboarding.style.display = 'flex';
-                        showToast('Signed out.');
-                    }
-                });
-
-                document.getElementById('profileEditBtn').addEventListener('click', () => {
-                    showToast('✏️ Edit profile coming soon!');
-                });
-
-                // Close toast on click
-                toast.addEventListener('click', () => toast.classList.remove('show'));
-
-                // Timer cleanup
-                window.addEventListener('beforeunload', () => {
-                    clearInterval(state.timerInterval);
-                });
-            }
-
-            // Start
-            document.addEventListener('DOMContentLoaded', init);
-
-            // Expose for debugging
-            window.__state = state;
-
-        })();
-    </script>
-
+    document.addEventListener('DOMContentLoaded', init);
+  })();
+</script>
 </body>
 </html>
