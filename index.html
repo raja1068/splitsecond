@@ -189,7 +189,7 @@
     .lb-entry .info .detail { font-size:11px; color:var(--text-secondary); }
     .lb-entry .xp { font-weight:600; color:var(--secondary); font-size:14px; }
 
-    /* Store / IAP with real money prices */
+    /* Store / IAP with real-money prices */
     .store-header { text-align:center; padding:8px 0 16px; }
     .store-header .icon { font-size:48px; margin-bottom:6px; }
     .store-header h2 { font-size:22px; font-weight:700; background:linear-gradient(135deg,#fff,#A78BFA); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
@@ -198,7 +198,7 @@
     .store-card { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); border-radius:var(--radius-sm); padding:14px 10px; text-align:center; transition:var(--transition); }
     .store-card:hover { border-color:rgba(255,255,255,0.12); }
     .store-card .price { font-size:18px; font-weight:700; color:var(--primary-light); margin:3px 0; }
-    .store-card .real-price { font-size:14px; font-weight:600; color:var(--text-primary); margin:2px 0; }
+    .store-card .real-price { font-size:15px; font-weight:700; color:var(--text-primary); background:rgba(255,255,255,0.05); display:inline-block; padding:2px 12px; border-radius:20px; margin:4px 0; }
     .store-card .name { font-size:13px; font-weight:500; }
     .store-card .desc { font-size:11px; color:var(--text-secondary); margin:3px 0 8px; }
     .store-card .badge-popular { background:var(--accent-orange); color:#fff; font-size:9px; font-weight:700; padding:2px 8px; border-radius:20px; display:inline-block; margin-bottom:4px; }
@@ -219,6 +219,25 @@
     .xiaomi-info h4 { font-size:13px; font-weight:600; color:var(--primary-light); margin-bottom:4px; }
     .xiaomi-info p { font-size:11px; color:var(--text-secondary); line-height:1.5; }
     .xiaomi-info code { background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px; font-size:10px; color:var(--text-primary); display:block; margin:4px 0; overflow-x:auto; white-space:pre-wrap; word-break:break-all; }
+
+    /* Purchase Confirmation Modal */
+    #purchaseModal {
+      position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(12px);
+      display:none; align-items:center; justify-content:center; z-index:300; padding:20px;
+    }
+    #purchaseModal.open { display:flex; }
+    .purchase-box {
+      background:#1A1030; border:1px solid rgba(255,255,255,0.08); border-radius:28px;
+      padding:1.8rem 1.5rem; max-width:380px; width:100%; text-align:center;
+    }
+    .purchase-box h3 { font-size:20px; font-weight:700; margin-bottom:6px; background:linear-gradient(135deg,#fff,#A78BFA); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .purchase-box .product-detail { font-size:16px; color:var(--text-primary); margin:8px 0; }
+    .purchase-box .product-price { font-size:26px; font-weight:700; color:var(--secondary); margin:4px 0; }
+    .purchase-box .user-info { font-size:12px; color:var(--text-secondary); margin:10px 0; border-top:1px solid rgba(255,255,255,0.06); padding-top:10px; }
+    .purchase-box .user-info strong { color:var(--text-primary); }
+    .purchase-box .status { font-size:13px; color:var(--text-secondary); margin:8px 0; display:none; }
+    .purchase-box .actions { display:flex; gap:8px; margin-top:16px; }
+    .purchase-box .actions .btn { flex:1; padding:10px; font-size:14px; }
 
     /* Auth Modal */
     #authModal { position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(12px); display:none; align-items:center; justify-content:center; z-index:200; padding:20px; }
@@ -359,7 +378,7 @@
       </div>
     </div>
 
-    <!-- STORE (IAP) with real money prices -->
+    <!-- STORE (IAP) with real-money prices -->
     <div id="screen-store" class="screen">
       <div class="store-header">
         <div class="icon">⚡</div>
@@ -558,7 +577,8 @@
         <div class="profile-avatar" id="profileAvatar">JD</div>
         <div class="profile-name" id="profileName">Jake Dawson</div>
         <div class="profile-handle" id="profileHandle">@jakedawson • Level 12</div>
-        <button class="btn btn-secondary btn-sm" style="margin-top:6px;" id="changeAvatarBtn"><i class="fas fa-camera"></i> Change Avatar</button>
+        <div style="font-size:11px;color:var(--text-muted);margin:4px 0;">Account ID: <span id="accountIdDisplay" style="color:var(--text-secondary);font-family:monospace;">XXXX</span></div>
+        <button class="btn btn-secondary btn-sm" style="margin-top:4px;" id="changeAvatarBtn"><i class="fas fa-camera"></i> Change Avatar</button>
       </div>
       <div class="profile-stats">
         <div class="stat"><div class="num" id="profileXp">2,840</div><div class="label">XP</div></div>
@@ -566,7 +586,7 @@
         <div class="stat"><div class="num" id="profileWins">23</div><div class="label">Wins</div></div>
       </div>
       <div style="display:flex;gap:6px;margin:3px 0 10px;flex-wrap:wrap;">
-        <span class="xp-badge"><i class="fas fa-bolt"></i> 120 Sparks</span>
+        <span class="xp-badge"><i class="fas fa-bolt"></i> <span id="profileSparks">120</span> Sparks</span>
         <span class="xp-badge" style="background:rgba(236,72,153,0.12);color:#EC4899;"><i class="fas fa-crown"></i> Premium</span>
       </div>
       <div class="section-title" style="margin-top:2px;">🏅 Badges <span class="see-all">4 / 12</span></div>
@@ -650,6 +670,24 @@
     </div>
   </div>
 
+  <!-- Purchase Confirmation Modal -->
+  <div id="purchaseModal">
+    <div class="purchase-box">
+      <h3>Confirm Purchase</h3>
+      <div class="product-detail" id="purchaseProductName">Product Name</div>
+      <div class="product-price" id="purchaseProductPrice">$0.00</div>
+      <div class="user-info">
+        <strong>Account:</strong> <span id="purchaseAccountId">XXXX</span><br>
+        <span style="font-size:11px;">This transaction will be processed via Xiaomi GetApps</span>
+      </div>
+      <div class="status" id="purchaseStatus">Processing...</div>
+      <div class="actions" id="purchaseActions">
+        <button class="btn btn-secondary" id="cancelPurchase">Cancel</button>
+        <button class="btn btn-success" id="confirmPurchase">Confirm Purchase</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast" class="toast"></div>
 </div>
 
@@ -666,6 +704,7 @@
     const authModal = $('#authModal');
     const avatarModal = $('#avatarModal');
     const editModal = $('#editProfileModal');
+    const purchaseModal = $('#purchaseModal');
 
     // ----- MUSIC ENGINE -----
     let audioCtx = null;
@@ -761,48 +800,19 @@
       else if (audioCtx.state === 'suspended') { audioCtx.resume(); musicPlaying = true; document.getElementById('musicToggle').classList.add('playing'); }
     }
 
-    // ----- IAP BRIDGE (WebView) -----
-    // This is the safe abstraction layer. It uses the native bridge if available,
-    // otherwise logs a message. It never handles payment credentials directly.
-    const IAPBridge = {
-      purchase: function(productId) {
-        if (window.AndroidIAP) {
-          window.AndroidIAP.purchase(productId);
-        } else {
-          console.log('Native IAP bridge unavailable. Product:', productId);
-          // In browser demo, simulate purchase
-          handleIAPPurchase(productId);
-        }
-      },
-      restorePurchases: function() {
-        if (window.AndroidIAP) {
-          window.AndroidIAP.restorePurchases();
-        } else {
-          console.log('Native IAP bridge unavailable for restore.');
-          showToast('🔄 Restore simulated – check console for details.');
-        }
-      }
-    };
+    // ----- IAP BRIDGE (WebView) with obfuscated account ID -----
+    function generateAccountId() {
+      return 'SS-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    }
 
-    // Callback functions (called from native side or simulated)
-    window.onPurchaseSuccess = function(result) {
-      // result contains purchase details (token, productId, etc.)
-      console.log('Purchase success:', result);
-      // In production, fetch verified entitlement from backend
-      // For demo, we simulate granting
-      showToast('✅ Purchase successful! Entitlement granted.');
-      // Update UI (will be handled by the purchase handler)
-    };
-
-    window.onPurchaseFailure = function(error) {
-      console.error('Purchase error:', error);
-      showToast('❌ Purchase failed: ' + (error.message || 'Unknown error'));
-    };
-
-    window.onPurchaseRestored = function(entitlements) {
-      console.log('Restored entitlements:', entitlements);
-      showToast('🔄 Restore completed. Your purchases are available.');
-      // Refresh UI based on entitlements
+    const productMap = {
+      'splitsecond_sparks_10': { sparks: 10, price: '$0.99', label: 'Starter Pack (10 Sparks)' },
+      'splitsecond_sparks_50': { sparks: 50, price: '$2.99', label: 'Popular Pack (50 Sparks)' },
+      'splitsecond_sparks_120': { sparks: 120, price: '$3.99', label: 'Power Pack (120 Sparks)' },
+      'splitsecond_sparks_300': { sparks: 300, price: '$5.99', label: 'Mega Pack (300 Sparks)' },
+      'splitsecond_time_freeze': { sparks: 0, price: '$0.99', label: 'Time Freeze Token' },
+      'splitsecond_template_pack': { sparks: 0, price: '$1.99', label: 'Template Pack' },
+      'splitsecond_plus_monthly': { sparks: 0, price: '$4.99/mo', label: 'SplitSecond Plus' },
     };
 
     // ----- STATE -----
@@ -822,6 +832,7 @@
         premium: true,
         avatar: 'JD',
         avatarType: 'initials',
+        accountId: generateAccountId(),
       },
       challenges: [
         { id:'c1', creator:'Alex', title:'WHO CAN SOLVE THIS TRIVIA?', desc:'Answer the question before time runs out!', timer:102, maxTimer:120, participants:5, totalInvited:8, xp:50, type:'trivia', category:'Trivia', group:'College Friends', status:'active', responses:5 },
@@ -844,6 +855,8 @@
       timerInterval: null,
       authMode: 'signin',
       selectedAvatar: null,
+      pendingPurchase: null,
+      isPurchaseInProgress: false,
     };
 
     // ----- HELPERS -----
@@ -1126,9 +1139,11 @@
       document.getElementById('profileXp').textContent = u.xp.toLocaleString();
       document.getElementById('profileStreak').textContent = '🔥 ' + u.streak;
       document.getElementById('profileWins').textContent = u.wins;
+      document.getElementById('profileSparks').textContent = u.sparks;
+      document.getElementById('accountIdDisplay').textContent = u.accountId;
     }
 
-    // ----- EDIT PROFILE (fully functional) -----
+    // ----- EDIT PROFILE -----
     function openEditProfile() {
       document.getElementById('editName').value = state.user.username;
       document.getElementById('editHandle').value = state.user.handle;
@@ -1150,54 +1165,45 @@
       showToast('Profile updated!');
     }
 
-    // ----- IAP PURCHASE HANDLER (with server-side verification comments) -----
-    /*
-     * PURCHASE FLOW (as per requirements):
-     * 1. User taps purchase -> IAPBridge.purchase(productId)
-     * 2. App checks product availability (via native SDK)
-     * 3. Launches official Xiaomi purchase flow
-     * 4. Store returns result (success/failure)
-     * 5. App verifies purchase (native side) – signature validation, etc.
-     * 6. Backend validates transaction (receipt verification, token validation)
-     *    - Duplicate transaction protection
-     *    - Fraud prevention (check for tampering)
-     *    - Idempotent processing
-     * 7. User entitlement is granted only after backend confirms
-     * 8. Consumables are consumed according to SDK requirements
-     * 9. UI updates balance
-     *
-     * SERVER-SIDE VERIFICATION:
-     * - Purchase token validation
-     * - Backend receipt verification with Xiaomi servers
-     * - Store purchase data in database with unique transaction IDs
-     * - Prevent duplicate grants by checking transaction state
-     * - Never trust client-side success alone.
-     *
-     * RESTORE PURCHASES:
-     * - Non-consumables and subscriptions are restored.
-     * - Consumables are not restored unless the SDK supports recovery
-     *   of unconsumed items (check Xiaomi documentation).
-     */
-    function handleIAPPurchase(productId) {
-      // This function simulates the purchase flow in the browser.
-      // In production, IAPBridge.purchase would be called, which invokes the native bridge.
-      // The native bridge would then trigger the official Xiaomi SDK.
-      // After successful purchase, the native side would call window.onPurchaseSuccess
-      // with a purchase token, which the app would then send to the backend for verification.
+    // ----- PURCHASE FLOW (with store confirmation) -----
+    function initiatePurchase(productId) {
+      if (state.isPurchaseInProgress) {
+        showToast('Please wait, a purchase is already in progress.');
+        return;
+      }
+      const product = productMap[productId];
+      if (!product) {
+        showToast('Invalid product.');
+        return;
+      }
+      state.pendingPurchase = { productId, productData: product };
+      document.getElementById('purchaseProductName').textContent = product.label;
+      document.getElementById('purchaseProductPrice').textContent = product.price;
+      document.getElementById('purchaseAccountId').textContent = state.user.accountId;
+      document.getElementById('purchaseStatus').style.display = 'none';
+      document.getElementById('purchaseActions').style.display = 'flex';
+      purchaseModal.classList.add('open');
+    }
 
-      // For demonstration, we simulate a successful purchase after a short delay.
-      showToast(`🛒 Processing ${productId} via Xiaomi GetApps...`);
+    function confirmPurchase() {
+      if (!state.pendingPurchase) return;
+      if (state.isPurchaseInProgress) return;
+      state.isPurchaseInProgress = true;
+      const { productId, productData } = state.pendingPurchase;
 
-      // Simulate network/backend verification delay
+      // Update modal to show processing
+      document.getElementById('purchaseStatus').style.display = 'block';
+      document.getElementById('purchaseStatus').textContent = '⏳ Processing with Xiaomi GetApps...';
+      document.getElementById('purchaseActions').style.display = 'none';
+      document.getElementById('confirmPurchase').disabled = true;
+
+      // Simulate store confirmation (network + backend)
       setTimeout(() => {
-        // Determine entitlement based on productId (obfuscated mapping)
-        // In production, the backend would map the obfuscated ID to the actual product
-        // and grant the correct entitlement.
+        // Grant entitlement only after successful confirmation
         if (productId.includes('sparks')) {
-          const amount = parseInt(productId.split('_').pop()) || 10;
-          state.user.sparks += amount;
-          showToast(`✅ Purchased ${amount} Sparks! Balance: ${state.user.sparks} ⚡`);
-          updateProfileUI();
+          const sparks = productData.sparks || 0;
+          state.user.sparks += sparks;
+          showToast(`✅ Purchase confirmed! +${sparks} Sparks added. Balance: ${state.user.sparks} ⚡`);
         } else if (productId === 'splitsecond_time_freeze') {
           showToast('⏱️ Time Freeze token added! Use it on your next challenge.');
         } else if (productId === 'splitsecond_template_pack') {
@@ -1205,12 +1211,74 @@
         } else if (productId === 'splitsecond_plus_monthly') {
           state.user.premium = true;
           showToast('✨ SplitSecond Plus activated! Enjoy premium features.');
-          updateProfileUI();
         } else {
-          showToast('✅ Purchase processed successfully.');
+          showToast('✅ Purchase confirmed.');
         }
-      }, 1500);
+        updateProfileUI();
+        purchaseModal.classList.remove('open');
+        state.pendingPurchase = null;
+        state.isPurchaseInProgress = false;
+        document.getElementById('confirmPurchase').disabled = false;
+      }, 1800);
     }
+
+    function cancelPurchase() {
+      if (state.isPurchaseInProgress) {
+        showToast('Cannot cancel while processing.');
+        return;
+      }
+      purchaseModal.classList.remove('open');
+      state.pendingPurchase = null;
+      showToast('Purchase cancelled.');
+    }
+
+    // ----- IAP Bridge (WebView) -----
+    const IAPBridge = {
+      purchase: function(productId) {
+        if (window.AndroidIAP) {
+          window.AndroidIAP.purchase(productId);
+        } else {
+          initiatePurchase(productId);
+        }
+      },
+      restorePurchases: function() {
+        if (window.AndroidIAP) {
+          window.AndroidIAP.restorePurchases();
+        } else {
+          showToast('🔄 Restore simulated – check console.');
+        }
+      }
+    };
+
+    // Callbacks from native side
+    window.onPurchaseSuccess = function(result) {
+      // In production, verify with backend. For demo, grant entitlement.
+      const productId = result.productId;
+      const product = productMap[productId];
+      if (product) {
+        if (productId.includes('sparks')) {
+          state.user.sparks += product.sparks;
+          updateProfileUI();
+          showToast(`✅ Purchase verified! +${product.sparks} Sparks.`);
+        } else if (productId === 'splitsecond_time_freeze') {
+          showToast('⏱️ Time Freeze token added.');
+        } else if (productId === 'splitsecond_template_pack') {
+          showToast('📦 Template pack unlocked.');
+        } else if (productId === 'splitsecond_plus_monthly') {
+          state.user.premium = true;
+          updateProfileUI();
+          showToast('✨ SplitSecond Plus activated.');
+        }
+      }
+    };
+
+    window.onPurchaseFailure = function(error) {
+      showToast('❌ Purchase failed: ' + (error.message || 'Unknown error'));
+    };
+
+    window.onPurchaseRestored = function(entitlements) {
+      showToast('🔄 Restore completed. Your purchases are available.');
+    };
 
     // ----- AUTH -----
     function showAuth(mode='signin') {
@@ -1260,6 +1328,7 @@
         u.handle='@'+u.username.toLowerCase().replace(/\s/g,'');
         u.avatar=getInitials(u.username);
         u.avatarType='initials';
+        u.accountId = generateAccountId();
         showToast('🎉 Account created! Welcome '+u.username);
       } else {
         showToast('👋 Welcome back, '+u.username);
@@ -1284,6 +1353,7 @@
       state.user.handle='@guest';
       state.user.avatar='👤';
       state.user.avatarType='emoji';
+      state.user.accountId = generateAccountId();
       closeAuth();
       login();
     }
@@ -1335,17 +1405,20 @@
         }
       });
 
-      // IAP purchase buttons use the bridge
+      // IAP purchase buttons
       document.addEventListener('click', function(e) {
         const btn = e.target.closest('.iap-purchase');
         if (btn) {
           const productId = btn.dataset.product;
           if (productId) {
-            // Use the safe bridge
             IAPBridge.purchase(productId);
           }
         }
       });
+
+      // Purchase modal events
+      document.getElementById('cancelPurchase').addEventListener('click', cancelPurchase);
+      document.getElementById('confirmPurchase').addEventListener('click', confirmPurchase);
 
       // Restore purchases
       document.getElementById('restorePurchases').addEventListener('click', function() {
