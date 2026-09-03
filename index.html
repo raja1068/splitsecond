@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -20,9 +20,9 @@
       --radius: 20px; --radius-sm: 12px;
       --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
     }
-    html, body { font-family:'Inter',sans-serif; background:#0B0815; color:var(--text-primary); height:100%; overflow:hidden; }
+    HTML, BODY { font-family:'Inter',sans-serif; background:#0B0815; color:var(--text-primary); height:100%; overflow:hidden; scroll-behavior: smooth; }
     #app {
-      display:flex; flex-direction:column; height:100vh; max-width:480px; margin:0 auto;
+      display:flex; flex-direction:column; height:100%; max-width:480px; margin:0 auto;
       background: radial-gradient(ellipse at 20% 20%, #1A1030, #0B0815 80%);
       position:relative; overflow:hidden; box-shadow:0 0 60px rgba(124,58,237,0.15);
     }
@@ -33,7 +33,7 @@
     .orb-4 { width:180px; height:180px; background:#F59E0B; bottom:30%; right:-30px; animation-delay:2s; opacity:0.18; }
     @keyframes orbFloat { 0%{ transform:translate(0,0) scale(1); } 100%{ transform:translate(30px,-30px) scale(1.1); } }
 
-    .screen { display:none; flex-direction:column; flex:1; padding:16px 16px 80px; overflow-y:auto; position:relative; z-index:1; animation:screenFade 0.4s ease; min-height:0; }
+    .screen { display:none; flex-direction:column; height:100%; padding:16px 16px 80px; overflow-y:auto; position:relative; z-index:1; animation:screenFade 0.4s ease; -webkit-overflow-scrolling: touch; }
     .screen.active { display:flex; }
     @keyframes screenFade { 0%{ opacity:0; transform:translateY(12px); } 100%{ opacity:1; transform:translateY(0); } }
 
@@ -93,10 +93,8 @@
     .card:hover { border-color:rgba(255,255,255,0.18); }
 
     .home-header { display:flex; justify-content:space-between; align-items:center; padding:8px 0 16px; }
-    .home-header h1 { font-size:22px; font-weight:700; background:linear-gradient(135deg,#fff,#A78BFA); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-    .home-header h1 i { -webkit-text-fill-color:initial; color:#F59E0B; }
-    .home-header .badge-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--secondary)); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px; cursor:pointer; border:2px solid rgba(255,255,255,0.10); overflow:hidden; }
-    .home-header .badge-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+    .back-btn { background:none; border:none; color:var(--text-secondary); font-size:18px; cursor:pointer; padding:4px; display:flex; align-items:center; }
+    .back-btn:hover { color:var(--text-primary); }
     .header-actions { display:flex; align-items:center; gap:10px; }
     .music-toggle { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); cursor:pointer; transition:var(--transition); font-size:16px; }
     .music-toggle:hover { background:rgba(255,255,255,0.12); }
@@ -114,8 +112,9 @@
     .challenge-card .timer { display:flex; align-items:center; gap:4px; font-weight:600; font-size:13px; color:var(--accent-orange); }
     .challenge-card .timer.warning { color:var(--accent-red); animation:blink 1s ease-in-out infinite; }
     @keyframes blink { 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
-    .challenge-card .title { font-size:16px; font-weight:600; margin:8px 0 4px; }
-    .challenge-card .meta { display:flex; gap:12px; font-size:12px; color:var(--text-secondary); margin-top:6px; flex-wrap:wrap; }
+    .challenge-card .title { font-size:17px; font-weight:700; margin:8px 0 4px; color:#fff; }
+    .challenge-card .desc-text { font-size:13px; color:var(--text-secondary); line-height:1.4; }
+    .challenge-card .meta { display:flex; gap:12px; font-size:12px; color:var(--text-secondary); margin-top:8px; flex-wrap:wrap; }
     .challenge-card .meta i { margin-right:3px; }
     .challenge-card .actions { display:flex; gap:6px; margin-top:10px; }
     .xp-badge { background:rgba(6,214,160,0.15); color:var(--secondary); padding:2px 8px; border-radius:20px; font-size:11px; font-weight:600; }
@@ -134,7 +133,7 @@
     .timer-grid .timer-btn.active { border-color:var(--secondary); background:rgba(6,214,160,0.10); color:var(--secondary); }
     .safety-warning { background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.15); border-radius:var(--radius-sm); padding:10px 12px; font-size:12px; color:var(--accent-red); display:flex; align-items:flex-start; gap:8px; }
 
-    .live-timer { font-size:48px; font-weight:700; text-align:center; font-variant-numeric:tabular-nums; background:linear-gradient(135deg,#fff,#A78BFA); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; letter-spacing:2px; animation:timerGlow 2s ease-in-out infinite alternate; }
+    .live-timer { font-size:48px; font-weight:700; text-align:center; background:linear-gradient(135deg,#fff,#A78BFA); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; letter-spacing:2px; animation:timerGlow 2s ease-in-out infinite alternate; }
     @keyframes timerGlow { 0%{ filter:drop-shadow(0 0 20px rgba(124,58,237,0.2)); } 100%{ filter:drop-shadow(0 0 40px rgba(124,58,237,0.5)); } }
     .live-progress { width:100%; height:5px; border-radius:10px; background:rgba(255,255,255,0.06); margin:12px 0; overflow:hidden; }
     .live-progress .bar { height:100%; border-radius:10px; background:linear-gradient(90deg,var(--primary),var(--secondary)); transition:width 1s linear; width:72%; }
@@ -214,6 +213,10 @@
     .subscription-card .benefits li { padding:4px 0; display:flex; align-items:center; gap:8px; }
     .subscription-card .benefits li i { color:var(--secondary); width:18px; }
     .subscription-card .btn { width:100%; margin-top:8px; }
+
+    .iap-info { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:var(--radius-sm); padding:12px 14px; margin:10px 0; }
+    .iap-info h4 { font-size:13px; font-weight:600; color:var(--primary-light); margin-bottom:4px; }
+    .iap-info p { font-size:11px; color:var(--text-secondary); line-height:1.5; }
 
     .xiaomi-info { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:var(--radius-sm); padding:12px 14px; margin:10px 0; }
     .xiaomi-info h4 { font-size:13px; font-weight:600; color:var(--primary-light); margin-bottom:4px; }
@@ -307,7 +310,7 @@
 
   <!-- Splash -->
   <div id="splash">
-    <div class="splash-logo"><i class="fas fa-bolt"></i>SPLITSECOND</div>
+    <div class="splash-logo"><i class="fas fa-bolt"></i>SplitSecond</div>
     <div class="splash-tagline">Challenge. Respond. Reveal.</div>
     <div class="splash-loader"></div>
   </div>
@@ -341,14 +344,18 @@
   </div>
 
   <!-- Main App -->
-  <div id="mainApp" style="display: none; flex-direction: column; flex: 1;">
+  <div id="mainApp" style="display: none; flex-direction: column; flex: 1; height:100%;">
 
     <!-- HOME -->
     <div id="screen-home" class="screen active">
       <div class="home-header">
-        <h1><i class="fas fa-bolt"></i> SplitSecond</h1>
+        <div></div>
         <div class="header-actions">
-          <button class="music-toggle playing" id="musicToggle" title="Toggle music"><i class="fas fa-music"></i></button>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+            <button class="music-toggle playing" id="musicToggle" title="Toggle music" style="width:30px; height:30px; font-size:14px;"><i class="fas fa-music"></i></button>
+            <label for="musicVolume" style="display:none;">Volume</label>
+            <input type="range" id="musicVolume" min="0" max="1" step="0.01" value="0.5" style="width:40px; height:4px; accent-color:var(--secondary); cursor:pointer;">
+          </div>
           <div class="badge-avatar" id="homeAvatar">JD</div>
         </div>
       </div>
@@ -370,16 +377,22 @@
       </div>
 
       <div class="section-title">🔥 Trending Challenges <span class="see-all">→</span></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <div class="card" style="padding:10px;text-align:center;cursor:pointer;"><div style="font-size:24px;">🎬</div><div style="font-size:12px;font-weight:500;margin-top:3px;">Movie Trivia</div><div style="font-size:10px;color:var(--text-secondary);">1.2k played</div></div>
-        <div class="card" style="padding:10px;text-align:center;cursor:pointer;"><div style="font-size:24px;">🧩</div><div style="font-size:12px;font-weight:500;margin-top:3px;">Emoji Puzzle</div><div style="font-size:10px;color:var(--text-secondary);">890 played</div></div>
-        <div class="card" style="padding:10px;text-align:center;cursor:pointer;"><div style="font-size:24px;">📸</div><div style="font-size:12px;font-weight:500;margin-top:3px;">Photo Prompt</div><div style="font-size:10px;color:var(--text-secondary);">650 played</div></div>
-        <div class="card" style="padding:10px;text-align:center;cursor:pointer;"><div style="font-size:24px;">⚽</div><div style="font-size:12px;font-weight:500;margin-top:3px;">Sports Predict</div><div style="font-size:10px;color:var(--text-secondary);">430 played</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="trendingChallenges">
+        <div class="card trending-card" style="padding:10px;text-align:center;cursor:pointer;" data-type="trivia" data-topic="Movie Trivia"><div style="font-size:24px;">🎬</div><div style="font-size:12px;font-weight:500;margin-top:3px;">Movie Trivia</div><div style="font-size:10px;color:var(--text-secondary);">1.2k played</div></div>
+        <div class="card trending-card" style="padding:10px;text-align:center;cursor:pointer;" data-type="trivia" data-topic="Emoji Puzzle"><div style="font-size:24px;">🧩</div><div style="font-size:12px;font-weight:500;margin-top:3px;">Emoji Puzzle</div><div style="font-size:10px;color:var(--text-secondary);">890 played</div></div>
+        <div class="card trending-card" style="padding:10px;text-align:center;cursor:pointer;" data-type="photo" data-topic="Photo Prompt"><div style="font-size:24px;">📸</div><div style="font-size:12px;font-weight:500;margin-top:3px;">Photo Prompt</div><div style="font-size:10px;color:var(--text-secondary);">650 played</div></div>
+        <div class="card trending-card" style="padding:10px;text-align:center;cursor:pointer;" data-type="prediction" data-topic="Sports Predict"><div style="font-size:24px;">⚽</div><div style="font-size:12px;font-weight:500;margin-top:3px;">Sports Predict</div><div style="font-size:10px;color:var(--text-secondary);">430 played</div></div>
+      </div>
+
+      <!-- Privacy Policy Footer -->
+      <div style="margin-top:24px; padding:12px; text-align:center; opacity:0.6; font-size:11px;">
+        <a href="privacy-policy.html" style="color:var(--text-secondary); text-decoration:none;">Privacy Policy</a>
       </div>
     </div>
 
     <!-- STORE (IAP) with real-money prices -->
     <div id="screen-store" class="screen">
+      <button class="back-btn back-to-home"><i class="fas fa-arrow-left"></i></button>
       <div class="store-header">
         <div class="icon">⚡</div>
         <h2>Power Up Your SplitSecond</h2>
@@ -393,8 +406,7 @@
           <div class="price">10 ⚡</div>
           <div class="real-price">$0.99</div>
           <div class="desc">Perfect for beginners</div>
-          <button class="btn btn-primary btn-sm iap-purchase" data-product="splitsecond_sparks_10">GET SPARKS</button>
-          <span class="iap-badge">via Xiaomi GetApps</span>
+          <button class="btn btn-primary btn-sm iap-purchase" data-product="SplitSecond_sparks_10">GET SPARKS</button>
         </div>
         <div class="store-card">
           <div class="badge-popular">MOST POPULAR</div>
@@ -402,24 +414,21 @@
           <div class="price">50 ⚡</div>
           <div class="real-price">$2.99</div>
           <div class="desc">Best value for active players</div>
-          <button class="btn btn-primary btn-sm iap-purchase" data-product="splitsecond_sparks_50">GET SPARKS</button>
-          <span class="iap-badge">via Xiaomi GetApps</span>
+          <button class="btn btn-primary btn-sm iap-purchase" data-product="SplitSecond_sparks_50">GET SPARKS</button>
         </div>
         <div class="store-card">
           <div class="name">Power Pack</div>
           <div class="price">120 ⚡</div>
           <div class="real-price">$3.99</div>
           <div class="desc">For the dedicated competitor</div>
-          <button class="btn btn-primary btn-sm iap-purchase" data-product="splitsecond_sparks_120">GET SPARKS</button>
-          <span class="iap-badge">via Xiaomi GetApps</span>
+          <button class="btn btn-primary btn-sm iap-purchase" data-product="SplitSecond_sparks_120">GET SPARKS</button>
         </div>
         <div class="store-card">
           <div class="name">Mega Pack</div>
           <div class="price">300 ⚡</div>
           <div class="real-price">$5.99</div>
           <div class="desc">Ultimate Spark bundle</div>
-          <button class="btn btn-primary btn-sm iap-purchase" data-product="splitsecond_sparks_300">GET SPARKS</button>
-          <span class="iap-badge">via Xiaomi GetApps</span>
+          <button class="btn btn-primary btn-sm iap-purchase" data-product="SplitSecond_sparks_300">GET SPARKS</button>
         </div>
       </div>
 
@@ -430,8 +439,7 @@
           <div class="name">Time Freeze Token</div>
           <div class="real-price">$0.99</div>
           <div class="desc">Extend a challenge response window</div>
-          <button class="btn btn-primary btn-sm iap-purchase" data-product="splitsecond_time_freeze">GET TOKEN</button>
-          <span class="iap-badge">via Xiaomi GetApps</span>
+          <button class="btn btn-primary btn-sm iap-purchase" data-product="SplitSecond_time_freeze">GET TOKEN</button>
         </div>
       </div>
 
@@ -442,15 +450,13 @@
           <div class="name">🎬 Movie Night</div>
           <div class="real-price">$1.99</div>
           <div class="desc">Cinema-themed challenges</div>
-          <button class="btn btn-secondary btn-sm iap-purchase" data-product="splitsecond_template_pack">UNLOCK</button>
-          <span class="iap-badge">via Xiaomi GetApps</span>
+          <button class="btn btn-secondary btn-sm iap-purchase" data-product="SplitSecond_template_pack">UNLOCK</button>
         </div>
         <div class="store-card">
           <div class="name">🎮 Gaming Pack</div>
           <div class="real-price">$1.99</div>
           <div class="desc">Esports &amp; gaming challenges</div>
-          <button class="btn btn-secondary btn-sm iap-purchase" data-product="splitsecond_template_pack">UNLOCK</button>
-          <span class="iap-badge">via Xiaomi GetApps</span>
+          <button class="btn btn-secondary btn-sm iap-purchase" data-product="SplitSecond_template_pack">UNLOCK</button>
         </div>
       </div>
 
@@ -466,8 +472,7 @@
           <li><i class="fas fa-check"></i> Profile cosmetics &amp; badges</li>
           <li><i class="fas fa-check"></i> More private group options</li>
         </ul>
-        <button class="btn btn-success btn-sm iap-purchase" data-product="splitsecond_plus_monthly">START FREE TRIAL</button>
-        <span class="iap-badge" style="display:block;margin-top:6px;">via Xiaomi GetApps subscription</span>
+        <button class="btn btn-success btn-sm iap-purchase" data-product="SplitSecond_plus_monthly">START FREE TRIAL</button>
         <div style="display:flex;gap:8px;margin-top:8px;justify-content:center;font-size:11px;color:var(--text-muted);">
           <span style="cursor:pointer;" id="restorePurchases"><i class="fas fa-redo"></i> Restore Purchases</span>
           <span>•</span>
@@ -475,18 +480,11 @@
         </div>
       </div>
 
-      <div class="xiaomi-info">
-        <h4><i class="fas fa-store"></i> Xiaomi GetApps IAP</h4>
-        <p>All purchases are processed securely through the official Xiaomi GetApps payment system. Your payment details are never stored by SplitSecond.</p>
-        <code style="font-size:10px;margin-top:4px;background:rgba(255,255,255,0.04);padding:6px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.04);">
-          &lt;dependency&gt;<br>
-          &nbsp;&nbsp;&lt;groupId&gt;com.xiaomi.billingclient&lt;/groupId&gt;<br>
-          &nbsp;&nbsp;&lt;artifactId&gt;billing&lt;/artifactId&gt;<br>
-          &nbsp;&nbsp;&lt;version&gt;1.2.3&lt;/version&gt;<br>
-          &lt;/dependency&gt;
-        </code>
-        <p style="margin-top:6px;font-size:10px;color:var(--text-muted);">
-          Obfuscated product IDs: splitsecond_sparks_10, splitsecond_sparks_50, splitsecond_sparks_120, splitsecond_sparks_300, splitsecond_time_freeze, splitsecond_template_pack, splitsecond_plus_monthly
+      <div class="iap-info" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:var(--radius-sm); padding:12px 14px; margin:10px 0;">
+        <h4><i class="fas fa-shield-alt"></i> Secure Purchases</h4>
+        <p style="font-size:11px; color:var(--text-secondary); line-height:1.5;">All transactions are processed securely. Your payment details are protected and never stored by SplitSecond.</p>
+        <p style="margin-top:6px; font-size:10px; color:var(--text-muted);">
+          Manage your digital goods and subscriptions in your account settings.
         </p>
       </div>
     </div>
@@ -494,16 +492,28 @@
     <!-- CHALLENGES -->
     <div id="screen-challenges" class="screen">
       <div class="home-header" style="padding-bottom:6px;">
-        <h1 style="font-size:20px;">⚡ All Challenges</h1>
+        <button class="back-btn back-to-home"><i class="fas fa-arrow-left"></i></button>
         <span style="font-size:12px;color:var(--text-secondary);" id="challengeCount">6 active</span>
       </div>
+
+      <!-- Get Sparks Banner -->
+      <div class="card" style="margin-bottom:12px; background:linear-gradient(135deg, rgba(124,58,237,0.15), rgba(6,214,160,0.15)); border:1px solid var(--primary-light);">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-weight:700; font-size:14px; color:var(--primary-light);">Boost Your Rank! ⚡</div>
+            <div style="font-size:10px; color:var(--text-secondary);">Sparks give all participants 2x XP bonus!</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="showScreen('screen-store')">Get Sparks</button>
+        </div>
+      </div>
+
       <div id="allChallengesList"></div>
     </div>
 
     <!-- CREATE -->
     <div id="screen-create" class="screen">
       <div class="home-header" style="padding-bottom:6px;">
-        <h1 style="font-size:20px;">✨ Create Challenge</h1>
+        <button class="back-btn back-to-home"><i class="fas fa-arrow-left"></i></button>
         <span style="font-size:12px;color:var(--text-secondary);">New</span>
       </div>
       <form class="create-form" id="createForm">
@@ -518,10 +528,10 @@
             <button type="button" class="type-btn" data-type="team"><i class="fas fa-users"></i>Team</button>
           </div>
         </div>
-        <div><label>Title</label><input type="text" placeholder="e.g. Who can solve this trivia?" id="challengeTitle" required /></div>
-        <div><label>Description</label><textarea placeholder="What's the challenge about?" id="challengeDesc"></textarea></div>
+        <div><label for="challengeTitle">Title</label><input type="text" placeholder="e.g. Who can solve this trivia?" id="challengeTitle" required /></div>
+        <div><label for="challengeDesc">Description</label><textarea placeholder="What's the challenge about?" id="challengeDesc"></textarea></div>
         <div>
-          <label>Category</label>
+          <label for="challengeCategory">Category</label>
           <select id="challengeCategory">
             <option value="Fun">🎉 Fun</option><option value="Trivia">🧠 Trivia</option>
             <option value="Gaming">🎮 Gaming</option><option value="Movies">🎬 Movies</option>
@@ -543,7 +553,7 @@
           </div>
         </div>
         <div>
-          <label>Invite Group</label>
+          <label for="challengeGroup">Invite Group</label>
           <select id="challengeGroup">
             <option value="College Friends">🎓 College Friends</option>
             <option value="Gaming Squad">🎮 Gaming Squad</option>
@@ -560,7 +570,7 @@
     <!-- LEADERBOARD -->
     <div id="screen-leaderboard" class="screen">
       <div class="home-header" style="padding-bottom:6px;">
-        <h1 style="font-size:20px;">🏆 Leaderboard</h1>
+        <button class="back-btn back-to-home"><i class="fas fa-arrow-left"></i></button>
         <span style="font-size:12px;color:var(--text-secondary);">Top players</span>
       </div>
       <div class="lb-tabs">
@@ -573,6 +583,7 @@
 
     <!-- PROFILE -->
     <div id="screen-profile" class="screen">
+      <button class="back-btn back-to-home"><i class="fas fa-arrow-left"></i></button>
       <div class="profile-header">
         <div class="profile-avatar" id="profileAvatar">JD</div>
         <div class="profile-name" id="profileName">Jake Dawson</div>
@@ -621,9 +632,9 @@
       <h2 id="authTitle">Welcome Back</h2>
       <div class="sub" id="authSub">Sign in to continue</div>
       <form id="authForm">
-        <div class="field"><label>Email</label><input type="email" id="authEmail" placeholder="you@example.com" required /></div>
-        <div class="field"><label>Password</label><input type="password" id="authPassword" placeholder="••••••••" required minlength="4" /></div>
-        <div class="field" id="nameField" style="display:none;"><label>Display Name</label><input type="text" id="authName" placeholder="Your name" /></div>
+        <div class="field"><label for="authEmail">Email</label><input type="email" id="authEmail" placeholder="you@example.com" required /></div>
+        <div class="field"><label for="authPassword">Password</label><input type="password" id="authPassword" placeholder="••••••••" required minlength="4" /></div>
+        <div class="field" id="nameField" style="display:none;"><label for="authName">Display Name</label><input type="text" id="authName" placeholder="Your name" /></div>
         <div class="actions">
           <button type="submit" class="btn btn-primary btn-glow" id="authSubmit">Sign In</button>
         </div>
@@ -656,11 +667,11 @@
     <div class="edit-box">
       <h3>Edit Profile</h3>
       <div class="field">
-        <label>Display Name</label>
+        <label for="editName">Display Name</label>
         <input type="text" id="editName" placeholder="Your name" />
       </div>
       <div class="field">
-        <label>Username (handle)</label>
+        <label for="editHandle">Username (handle)</label>
         <input type="text" id="editHandle" placeholder="@username" />
       </div>
       <div class="actions">
@@ -694,8 +705,8 @@
 <script>
   (function() {
     'use strict';
-    const $ = s => document.querySelector(s);
-    const $$ = s => document.querySelectorAll(s);
+    const $ = function(s) { return document.querySelector(s); };
+    const $$ = function(s) { return document.querySelectorAll(s); };
 
     const splash = $('#splash');
     const onboarding = $('#onboarding');
@@ -706,7 +717,7 @@
     const editModal = $('#editProfileModal');
     const purchaseModal = $('#purchaseModal');
 
-    // ----- MUSIC ENGINE -----
+    // ----- MUSIC ENGINE (Santoor/Guitar Simulation) -----
     let audioCtx = null;
     let musicPlaying = false;
     let musicGain = null;
@@ -715,61 +726,64 @@
       try {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         musicGain = audioCtx.createGain();
-        musicGain.gain.value = 0.12;
+        musicGain.gain.value = 0.08; // Base volume
         musicGain.connect(audioCtx.destination);
-        const freqs = [130.81, 164.81, 196.00, 261.63];
-        freqs.forEach((freq, i) => {
+
+        const frequencies = [130.81, 164.81, 196.00, 261.63, 329.63, 392.00, 523.25];
+
+        function playPluck(freq, delay) {
           const osc = audioCtx.createOscillator();
-          osc.type = 'sine';
+          const pluckedGain = audioCtx.createGain();
+
+          osc.type = 'triangle';
           osc.frequency.value = freq;
-          osc.detune.value = (i - 1.5) * 4;
-          const osc2 = audioCtx.createOscillator();
-          osc2.type = 'triangle';
-          osc2.frequency.value = freq * 1.005;
-          osc2.detune.value = (i - 1.5) * 4 + 2;
-          const gain = audioCtx.createGain();
-          gain.gain.value = 0.08 + (0.02 * (i % 3));
-          osc.connect(gain);
-          osc2.connect(gain);
-          gain.connect(musicGain);
-          osc.start();
-          osc2.start();
-          const lfo = audioCtx.createOscillator();
-          lfo.type = 'sine';
-          lfo.frequency.value = 0.2 + (i * 0.03);
-          const lfoGain = audioCtx.createGain();
-          lfoGain.gain.value = 0.8 + (i * 0.1);
-          lfo.connect(lfoGain);
-          lfoGain.connect(osc.frequency);
-          lfo.start();
-          const lfo2 = audioCtx.createOscillator();
-          lfo2.type = 'sine';
-          lfo2.frequency.value = 0.25 + (i * 0.02);
-          const lfoGain2 = audioCtx.createGain();
-          lfoGain2.gain.value = 0.6 + (i * 0.08);
-          lfo2.connect(lfoGain2);
-          lfoGain2.connect(osc2.frequency);
-          lfo2.start();
-        });
-        const sub = audioCtx.createOscillator();
-        sub.type = 'sine';
-        sub.frequency.value = 65.41;
-        const subGain = audioCtx.createGain();
-        subGain.gain.value = 0.04;
-        sub.connect(subGain);
-        subGain.connect(musicGain);
-        sub.start();
-        const trem = audioCtx.createOscillator();
-        trem.type = 'sine';
-        trem.frequency.value = 0.15;
-        const tremGain = audioCtx.createGain();
-        tremGain.gain.value = 0.02;
-        trem.connect(tremGain);
-        tremGain.connect(musicGain.gain);
-        trem.start();
+
+          pluckedGain.gain.setValueAtTime(0, audioCtx.currentTime + delay);
+          pluckedGain.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + delay + 0.01);
+          pluckedGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + 2.5);
+
+          // Harmonic for metallic santoor zing
+          const harmonic = audioCtx.createOscillator();
+          harmonic.type = 'sine';
+          harmonic.frequency.value = freq * 2.01;
+          const hGain = audioCtx.createGain();
+          hGain.gain.setValueAtTime(0, audioCtx.currentTime + delay);
+          hGain.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + delay + 0.01);
+          hGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + delay + 1.0);
+
+          osc.connect(pluckedGain);
+          pluckedGain.connect(musicGain);
+          harmonic.connect(hGain);
+          hGain.connect(musicGain);
+
+          osc.start(audioCtx.currentTime + delay);
+          harmonic.start(audioCtx.currentTime + delay);
+          osc.stop(audioCtx.currentTime + delay + 3);
+          harmonic.stop(audioCtx.currentTime + delay + 3);
+        }
+
+        let step = 0;
+        const melody = [0, 2, 4, 3, 5, 4, 6, 4];
+        function loop() {
+          if (!musicPlaying) return;
+          const f = frequencies[melody[step % melody.length]];
+          playPluck(f, 0);
+          step++;
+          setTimeout(loop, 1200);
+        }
+
         musicPlaying = true;
+        loop();
+
         document.getElementById('musicToggle').classList.add('playing');
         document.getElementById('musicToggle').innerHTML = '<i class="fas fa-music"></i>';
+
+        const volSlider = document.getElementById('musicVolume');
+        if (volSlider) {
+          volSlider.addEventListener('input', function() {
+            if (musicGain) musicGain.gain.setTargetAtTime(this.value * 0.15, audioCtx.currentTime, 0.05);
+          });
+        }
         return true;
       } catch (e) { return false; }
     }
@@ -800,19 +814,19 @@
       else if (audioCtx.state === 'suspended') { audioCtx.resume(); musicPlaying = true; document.getElementById('musicToggle').classList.add('playing'); }
     }
 
-    // ----- IAP BRIDGE (WebView) with obfuscated account ID -----
+    // ----- IAP BRIDGE -----
     function generateAccountId() {
       return 'SS-' + Math.random().toString(36).substring(2, 8).toUpperCase();
     }
 
     const productMap = {
-      'splitsecond_sparks_10': { sparks: 10, price: '$0.99', label: 'Starter Pack (10 Sparks)' },
-      'splitsecond_sparks_50': { sparks: 50, price: '$2.99', label: 'Popular Pack (50 Sparks)' },
-      'splitsecond_sparks_120': { sparks: 120, price: '$3.99', label: 'Power Pack (120 Sparks)' },
-      'splitsecond_sparks_300': { sparks: 300, price: '$5.99', label: 'Mega Pack (300 Sparks)' },
-      'splitsecond_time_freeze': { sparks: 0, price: '$0.99', label: 'Time Freeze Token' },
-      'splitsecond_template_pack': { sparks: 0, price: '$1.99', label: 'Template Pack' },
-      'splitsecond_plus_monthly': { sparks: 0, price: '$4.99/mo', label: 'SplitSecond Plus' },
+      'SplitSecond_sparks_10': { sparks: 10, price: '$0.99', label: 'Starter Pack (10 Sparks)' },
+      'SplitSecond_sparks_50': { sparks: 50, price: '$2.99', label: 'Popular Pack (50 Sparks)' },
+      'SplitSecond_sparks_120': { sparks: 120, price: '$3.99', label: 'Power Pack (120 Sparks)' },
+      'SplitSecond_sparks_300': { sparks: 300, price: '$5.99', label: 'Mega Pack (300 Sparks)' },
+      'SplitSecond_time_freeze': { sparks: 0, price: '$0.99', label: 'Time Freeze Token' },
+      'SplitSecond_template_pack': { sparks: 0, price: '$1.99', label: 'Template Pack' },
+      'SplitSecond_plus_monthly': { sparks: 0, price: '$4.99/mo', label: 'SplitSecond Plus' },
     };
 
     // ----- STATE -----
@@ -835,12 +849,12 @@
         accountId: generateAccountId(),
       },
       challenges: [
-        { id:'c1', creator:'Alex', title:'WHO CAN SOLVE THIS TRIVIA?', desc:'Answer the question before time runs out!', timer:102, maxTimer:120, participants:5, totalInvited:8, xp:50, type:'trivia', category:'Trivia', group:'College Friends', status:'active', responses:5 },
-        { id:'c2', creator:'Mia', title:'BEST GAMING SETUP', desc:'Show us your gaming battle station!', timer:47, maxTimer:60, participants:4, totalInvited:6, xp:35, type:'photo', category:'Gaming', group:'Gaming Squad', status:'active', responses:4 },
-        { id:'c3', creator:'Jordan', title:'WHO WILL WIN TONIGHT?', desc:'Predict the match outcome!', timer:210, maxTimer:300, participants:7, totalInvited:10, xp:40, type:'prediction', category:'Sports', group:'Weekend Crew', status:'active', responses:7 },
-        { id:'c4', creator:'Sam', title:'EMOJI MOVIE QUIZ', desc:'Guess the movie from the emojis!', timer:18, maxTimer:30, participants:3, totalInvited:5, xp:25, type:'trivia', category:'Movies', group:'Family', status:'active', responses:3 },
-        { id:'c5', creator:'Taylor', title:'FUNNY DESK SETUP', desc:'Post your funniest desk setup photo!', timer:55, maxTimer:120, participants:6, totalInvited:8, xp:30, type:'photo', category:'Fun', group:'Office Team', status:'active', responses:6 },
-        { id:'c6', creator:'Riley', title:'MUSIC GUESSING GAME', desc:'Name that song from the lyrics!', timer:82, maxTimer:120, participants:4, totalInvited:7, xp:45, type:'trivia', category:'Music', group:'College Friends', status:'active', responses:4 },
+        { id:'c1', creator:'Alex', title:'WHO CAN SOLVE THIS TRIVIA?', desc:'Topic: Space Exploration. Question: What is the third planet from the sun? Answer quickly!', timer:102, maxTimer:120, participants:5, totalInvited:8, xp:50, type:'trivia', category:'Trivia', group:'College Friends', status:'active', responses:5 },
+        { id:'c2', creator:'Mia', title:'BEST GAMING SETUP', desc:'Topic: Battlestations. Post a photo of your current gaming setup with RGB lights if possible!', timer:47, maxTimer:60, participants:4, totalInvited:6, xp:35, type:'photo', category:'Gaming', group:'Gaming Squad', status:'active', responses:4 },
+        { id:'c3', creator:'Jordan', title:'WHO WILL WIN TONIGHT?', desc:'Topic: Premier League. Predict the winner of tonight\'s match between Arsenal and Liverpool!', timer:210, maxTimer:300, participants:7, totalInvited:10, xp:40, type:'prediction', category:'Sports', group:'Weekend Crew', status:'active', responses:7 },
+        { id:'c4', creator:'Sam', title:'EMOJI MOVIE QUIZ', desc:'Topic: Disney Movies. Guess the movie: 🦁👑. Be the first to respond!', timer:18, maxTimer:30, participants:3, totalInvited:5, xp:25, type:'trivia', category:'Movies', group:'Family', status:'active', responses:3 },
+        { id:'c5', creator:'Taylor', title:'FUNNY DESK SETUP', desc:'Topic: WFH Life. Show us the most chaotic part of your work-from-home desk right now.', timer:55, maxTimer:120, participants:6, totalInvited:8, xp:30, type:'photo', category:'Fun', group:'Office Team', status:'active', responses:6 },
+        { id:'c6', creator:'Riley', title:'MUSIC GUESSING GAME', desc:'Topic: 80s Hits. "Just a small town girl, livin\' in a lonely world..." Name the song!', timer:82, maxTimer:120, participants:4, totalInvited:7, xp:45, type:'trivia', category:'Music', group:'College Friends', status:'active', responses:4 },
       ],
       leaderboard: [
         { name:'Jake Dawson', handle:'@jakedawson', xp:2840 },
@@ -861,80 +875,79 @@
 
     // ----- HELPERS -----
     function formatTime(sec) { const m=Math.floor(sec/60); const s=Math.floor(sec%60); return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'); }
-    function showToast(msg) { toast.textContent=msg; toast.classList.add('show'); clearTimeout(toast._hide); toast._hide=setTimeout(()=>toast.classList.remove('show'),2600); }
+    function showToast(msg) { toast.textContent=msg; toast.classList.add('show'); clearTimeout(toast._hide); toast._hide=setTimeout(function() { toast.classList.remove('show'); }, 2600); }
     function getRandomColor() { const colors=['#7C3AED','#06D6A0','#EC4899','#F59E0B','#3B82F6','#EF4444','#06B6D4','#8B5CF6']; return colors[Math.floor(Math.random()*colors.length)]; }
-    function getInitials(name) { return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+    function getInitials(name) { return name.split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().slice(0, 2); }
 
     // ----- SCREEN NAV -----
     function showScreen(id) {
-      $$('.screen').forEach(s=>s.classList.remove('active'));
+      $$('.screen').forEach(function(s) { s.classList.remove('active'); });
       const target=document.getElementById(id);
       if (target) target.classList.add('active');
-      $$('.nav-item').forEach(n=>n.classList.remove('active'));
-      const navBtn=document.querySelector(`.nav-item[data-screen="${id}"]`);
+      $$('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+      const navBtn = document.querySelector(`.nav-item[data-screen="${id}"]`);
       if (navBtn) navBtn.classList.add('active');
-      if (id==='screen-home') renderChallenges();
-      if (id==='screen-challenges') renderAllChallenges();
-      if (id==='screen-leaderboard') renderLeaderboard('friends');
+      if (id === 'screen-home') renderChallenges();
+      if (id === 'screen-challenges') renderAllChallenges();
+      if (id === 'screen-leaderboard') renderLeaderboard('friends');
       startMusicOnInteraction();
     }
+    window.showScreen = showScreen;
 
     // ----- RENDER CHALLENGES -----
     function renderChallenges() {
       const container=$('#activeChallenges');
       if (!container) return;
-      const active=state.challenges.filter(c=>c.status==='active');
-      if (active.length===0) {
-        container.innerHTML=`<div class="card" style="text-align:center;padding:20px;color:var(--text-secondary);"><div style="font-size:28px;margin-bottom:6px;">🚀</div>No active challenges. Create one!</div>`;
+      const active = state.challenges.filter(function(c) { return c.status === 'active'; });
+      if (active.length === 0) {
+        container.innerHTML = `<div class="card" style="text-align:center;padding:20px;color:var(--text-secondary);"><div style="font-size:28px;margin-bottom:6px;">🚀</div>No active challenges. Create one!</div>`;
         return;
       }
-      container.innerHTML=active.slice(0,4).map(c=>{
-        const warn=c.timer<10;
+      container.innerHTML = active.slice(0, 4).map(function(c) {
+        const warn = c.timer < 10;
         return `<div class="challenge-card" data-id="${c.id}">
           <div class="top"><div class="creator"><div class="avatar" style="background:${getRandomColor()};">${getInitials(c.creator)}</div><span>${c.creator} • ${c.group}</span></div><div class="timer ${warn?'warning':''}"><i class="fas fa-clock"></i> ${formatTime(c.timer)}</div></div>
-          <div class="title">${c.title}</div><div style="font-size:12px;color:var(--text-secondary);">${c.desc}</div>
+          <div class="title">${c.title}</div>
+          <div class="desc-text" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${c.desc}</div>
           <div class="meta"><span><i class="fas fa-users"></i> ${c.responses} / ${c.totalInvited}</span><span><i class="fas fa-tag"></i> ${c.category}</span><span class="xp-badge">+${c.xp} XP</span></div>
-          <div class="actions"><button class="btn btn-primary btn-sm join-btn" data-id="${c.id}">JOIN NOW</button><button class="btn btn-secondary btn-sm invite-btn" data-id="${c.id}"><i class="fas fa-share-alt"></i></button></div>
+          <div class="actions"><button class="btn btn-primary btn-sm join-btn" data-id="${c.id}">DETAILS & JOIN</button></div>
         </div>`;
       }).join('');
 
-      container.querySelectorAll('.join-btn').forEach(btn=>{
-        btn.addEventListener('click',e=>{ e.stopPropagation(); const id=btn.dataset.id; const challenge=state.challenges.find(c=>c.id===id); if(challenge){ showToast(`⚡ Joined "${challenge.title}"!`); showLiveChallenge(id); } });
+      container.querySelectorAll('.join-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) { e.stopPropagation(); const id = btn.dataset.id; showLiveChallenge(id); });
       });
-      container.querySelectorAll('.invite-btn').forEach(btn=>{
-        btn.addEventListener('click',e=>{ e.stopPropagation(); showToast('📤 Share link copied to clipboard!'); });
-      });
-      container.querySelectorAll('.challenge-card').forEach(card=>{
-        card.addEventListener('click',function(){ const id=this.dataset.id; if(id) showLiveChallenge(id); });
+      container.querySelectorAll('.challenge-card').forEach(function(card) {
+        card.addEventListener('click', function() { const id = this.dataset.id; if (id) showLiveChallenge(id); });
       });
     }
 
     function renderAllChallenges() {
       const container=$('#allChallengesList');
       if (!container) return;
-      const active=state.challenges.filter(c=>c.status==='active');
-      if (active.length===0) { container.innerHTML=`<div class="card" style="text-align:center;padding:20px;color:var(--text-secondary);">No challenges yet.</div>`; return; }
-      container.innerHTML=active.map(c=>{
-        const warn=c.timer<10;
+      const active = state.challenges.filter(function(c) { return c.status === 'active'; });
+      if (active.length === 0) { container.innerHTML = `<div class="card" style="text-align:center;padding:20px;color:var(--text-secondary);">No challenges yet.</div>`; return; }
+      container.innerHTML = active.map(function(c) {
+        const warn = c.timer < 10;
         return `<div class="challenge-card" data-id="${c.id}">
           <div class="top"><div class="creator"><div class="avatar" style="background:${getRandomColor()};">${getInitials(c.creator)}</div><span>${c.creator}</span></div><div class="timer ${warn?'warning':''}"><i class="fas fa-clock"></i> ${formatTime(c.timer)}</div></div>
           <div class="title">${c.title}</div>
           <div class="meta"><span><i class="fas fa-users"></i> ${c.responses}/${c.totalInvited}</span><span><i class="fas fa-tag"></i> ${c.category}</span><span class="xp-badge">+${c.xp} XP</span></div>
-          <button class="btn btn-primary btn-sm join-btn" data-id="${c.id}" style="margin-top:6px;">JOIN NOW</button>
+          <button class="btn btn-primary btn-sm join-btn" data-id="${c.id}" style="margin-top:6px;">VIEW TOPIC</button>
         </div>`;
       }).join('');
-      container.querySelectorAll('.join-btn').forEach(btn=>{
-        btn.addEventListener('click',e=>{ e.stopPropagation(); const id=btn.dataset.id; const challenge=state.challenges.find(c=>c.id===id); if(challenge){ showToast(`⚡ Joined "${challenge.title}"!`); showLiveChallenge(id); } });
+      container.querySelectorAll('.join-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) { e.stopPropagation(); const id = btn.dataset.id; showLiveChallenge(id); });
       });
-      const countEl=document.getElementById('challengeCount');
-      if (countEl) countEl.textContent=active.length+' active';
+      const countEl = document.getElementById('challengeCount');
+      if (countEl) countEl.textContent = active.length + ' active';
     }
 
     // ----- LIVE CHALLENGE -----
     function showLiveChallenge(id) {
-      const challenge=state.challenges.find(c=>c.id===id);
+      const challenge = state.challenges.find(function(c) { return c.id === id; });
       if (!challenge) return showToast('Challenge not found');
-      const liveHTML=`
+      const liveHTML = `
         <div id="liveScreen" class="screen active" style="padding:12px 16px 80px;display:flex;flex-direction:column;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
             <button id="liveBackBtn" style="background:none;border:none;color:var(--text-secondary);font-size:18px;cursor:pointer;"><i class="fas fa-arrow-left"></i></button>
@@ -944,51 +957,76 @@
             <div class="live-timer" id="liveTimerDisplay">${formatTime(challenge.timer)}</div>
             <div style="font-size:12px;color:var(--text-secondary);">remaining</div>
           </div>
-          <div class="live-progress"><div class="bar" id="liveProgressBar" style="width:${(challenge.timer/challenge.maxTimer)*100}%;"></div></div>
-          <h2 style="font-size:20px;font-weight:700;margin:3px 0 2px;">${challenge.title}</h2>
-          <p style="color:var(--text-secondary);font-size:13px;">${challenge.desc}</p>
+          <div class="live-progress"><div class="bar" id="liveProgressBar" style="width:${(challenge.timer / challenge.maxTimer) * 100}%;"></div></div>
+          <h2 style="font-size:22px;font-weight:700;margin:6px 0 4px;color:#fff;text-shadow:0 0 20px rgba(124,58,237,0.3);">${challenge.title}</h2>
+
+          <div class="card" style="margin:10px 0; padding:18px; border-left:4px solid var(--primary);">
+            <div style="font-size:11px; color:var(--primary-light); text-transform:uppercase; font-weight:700; margin-bottom:4px;">Challenge Topic & Details</div>
+            <p style="color:var(--text-primary); font-size:15px; line-height:1.6;">${challenge.desc}</p>
+          </div>
+
           <div class="live-participants">
-            <div class="avatar-stack">${Array.from({length:Math.min(challenge.responses,5)},(_,i)=>`<div class="mini-avatar" style="background:${getRandomColor()};">${String.fromCharCode(65+i)}</div>`).join('')}</div>
+            <div class="avatar-stack">${Array.from({ length: Math.min(challenge.responses, 5) }, function(_, i) { return `<div class="mini-avatar" style="background:${getRandomColor()};">${String.fromCharCode(65 + i)}</div>`; }).join('')}</div>
             <div class="count"><strong>${challenge.responses}</strong> / ${challenge.totalInvited} responded</div>
             <span style="margin-left:auto;font-size:12px;color:var(--text-secondary);">+${challenge.xp} XP</span>
           </div>
-          <div style="display:flex;gap:6px;margin:10px 0 12px;flex-wrap:wrap;">
-            <button class="btn btn-primary" id="liveRespondBtn" style="flex:1;padding:10px;font-size:13px;"><i class="fas fa-reply"></i> Respond</button>
-            <button class="btn btn-secondary" id="liveInviteBtn" style="padding:10px 14px;font-size:13px;"><i class="fas fa-share-alt"></i></button>
+          <div style="display:flex;gap:10px;margin:10px 0 12px;flex-wrap:wrap;">
+            <button class="btn btn-primary" id="liveRespondBtn" style="flex:2;padding:14px;font-size:15px;"><i class="fas fa-bolt"></i> START RESPONSE</button>
+            <button class="btn btn-secondary" id="liveInviteBtn" style="flex:1;padding:14px;font-size:15px;"><i class="fas fa-share-alt"></i></button>
           </div>
-          <div class="card" style="padding:12px;font-size:13px;color:var(--text-secondary);"><i class="fas fa-info-circle"></i> Challenge ends when timer hits zero. Be quick!</div>
-          <button class="btn btn-outline w-full" id="liveResultsBtn" style="margin-top:10px;padding:10px;font-size:13px;"><i class="fas fa-chart-bar"></i> View Results</button>
+          <div class="card" style="padding:12px;font-size:13px;color:var(--text-secondary);"><i class="fas fa-info-circle"></i> Respond before the timer ends to earn XP and rank up!</div>
+          <button class="btn btn-outline w-full" id="liveResultsBtn" style="margin-top:10px;padding:12px;font-size:13px;"><i class="fas fa-chart-bar"></i> View Partial Results</button>
         </div>
       `;
-      $$('.screen').forEach(s=>s.classList.remove('active'));
-      const temp=document.createElement('div'); temp.innerHTML=liveHTML;
-      const liveScreen=temp.firstElementChild;
+      $$('.screen').forEach(function(s) { s.classList.remove('active'); });
+      const temp = document.createElement('div'); temp.innerHTML = liveHTML;
+      const liveScreen = temp.firstElementChild;
       document.getElementById('mainApp').appendChild(liveScreen);
 
-      liveScreen.querySelector('#liveBackBtn').addEventListener('click',()=>{ liveScreen.remove(); showScreen('screen-home'); clearInterval(state.timerInterval); });
-      liveScreen.querySelector('#liveRespondBtn').addEventListener('click',()=>{ showResponseScreen(challenge); });
-      liveScreen.querySelector('#liveInviteBtn').addEventListener('click',()=>{ showToast('📤 Invite link copied! Share with friends.'); });
-      liveScreen.querySelector('#liveResultsBtn').addEventListener('click',()=>{ showResults(challenge); });
+      liveScreen.querySelector('#liveBackBtn').addEventListener('click', function() { liveScreen.remove(); showScreen('screen-home'); clearInterval(state.timerInterval); });
+      liveScreen.querySelector('#liveRespondBtn').addEventListener('click', function() { showResponseScreen(challenge); });
+      liveScreen.querySelector('#liveInviteBtn').addEventListener('click', function() { showToast('📤 Invite link copied! Share with friends.'); });
+      liveScreen.querySelector('#liveResultsBtn').addEventListener('click', function() { showResults(challenge); });
 
       clearInterval(state.timerInterval);
-      let t=challenge.timer;
-      const timerDisplay=liveScreen.querySelector('#liveTimerDisplay');
-      const progressBar=liveScreen.querySelector('#liveProgressBar');
-      state.timerInterval=setInterval(()=>{
-        t-=1;
-        if (t<=0) { clearInterval(state.timerInterval); timerDisplay.textContent='00:00'; showToast('⏰ Time is up! Check the results.'); return; }
-        timerDisplay.textContent=formatTime(t);
-        const pct=(t/challenge.maxTimer)*100;
-        progressBar.style.width=Math.max(0,pct)+'%';
-        if (t<10) timerDisplay.style.color='#EF4444';
-      },1000);
+      let t = challenge.timer;
+      const timerDisplay = liveScreen.querySelector('#liveTimerDisplay');
+      const progressBar = liveScreen.querySelector('#liveProgressBar');
+      state.timerInterval = setInterval(function() {
+        t -= 1;
+        if (t <= 0) { clearInterval(state.timerInterval); timerDisplay.textContent = '00:00'; showToast('⏰ Time is up! Check the results.'); return; }
+        timerDisplay.textContent = formatTime(t);
+        const pct = (t / challenge.maxTimer) * 100;
+        progressBar.style.width = Math.max(0, pct) + '%';
+        if (t < 10) timerDisplay.style.color = '#EF4444';
+      }, 1000);
     }
 
     // ----- RESPONSE SCREEN -----
     function showResponseScreen(challenge) {
-      const options=['Option A','Option B','Option C','Option D'];
-      const emojis=['🤔','😄','🔥','💡'];
-      const html=`
+      const options = ['Option A', 'Option B', 'Option C', 'Option D'];
+      const emojis = ['🤔', '😄', '🔥', '💡'];
+
+      let responseContent = '';
+      if (challenge.type === 'photo') {
+        responseContent = `
+          <div class="card" style="text-align:center; padding:30px 20px; border:2px dashed rgba(255,255,255,0.1); margin:10px 0;">
+            <div style="font-size:40px; margin-bottom:10px;">📸</div>
+            <div style="font-weight:600; font-size:16px;">Take a Photo</div>
+            <div style="font-size:12px; color:var(--text-secondary); margin-top:4px;">Upload your response to "${challenge.title}"</div>
+            <button class="btn btn-secondary btn-sm" style="margin-top:16px;" onclick="document.getElementById('photoInput').click()"><i class="fas fa-camera"></i> Select Image</button>
+            <input type="file" id="photoInput" accept="image/*" style="display:none;">
+          </div>
+        `;
+      } else {
+        responseContent = `
+          <div class="response-options" id="responseOptions">
+            ${options.map(function(opt, i) { return `<button class="opt" data-value="${opt}"><span class="emoji">${emojis[i]}</span> ${opt}</button>`; }).join('')}
+          </div>
+        `;
+      }
+
+      const htmlContent = `
         <div id="responseScreen" class="screen active" style="padding:12px 16px 80px;display:flex;flex-direction:column;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
             <button id="responseBackBtn" style="background:none;border:none;color:var(--text-secondary);font-size:18px;cursor:pointer;"><i class="fas fa-arrow-left"></i></button>
@@ -1000,47 +1038,45 @@
             <span><i class="fas fa-clock"></i> ${formatTime(challenge.timer)} left</span>
             <span><i class="fas fa-users"></i> ${challenge.responses} responded</span>
           </div>
-          <div class="response-options" id="responseOptions">
-            ${options.map((opt,i)=>`<button class="opt" data-value="${opt}"><span class="emoji">${emojis[i]}</span> ${opt}</button>`).join('')}
-          </div>
+          ${responseContent}
           <button class="btn btn-success btn-glow w-full" id="submitResponseBtn" style="margin-top:6px;padding:12px;font-size:14px;"><i class="fas fa-check"></i> Submit Response</button>
           <div style="margin-top:10px;text-align:center;font-size:11px;color:var(--text-muted);"><i class="fas fa-shield-alt"></i> Your response is safe & private</div>
         </div>
       `;
-      $$('.screen').forEach(s=>s.classList.remove('active'));
-      const temp=document.createElement('div'); temp.innerHTML=html;
-      const screen=temp.firstElementChild;
+      $$('.screen').forEach(function(s) { s.classList.remove('active'); });
+      const temp = document.createElement('div'); temp.innerHTML = htmlContent;
+      const screen = temp.firstElementChild;
       document.getElementById('mainApp').appendChild(screen);
 
-      let selected=null;
-      screen.querySelectorAll('.opt').forEach(btn=>{
-        btn.addEventListener('click',function(){ screen.querySelectorAll('.opt').forEach(b=>b.classList.remove('selected')); this.classList.add('selected'); selected=this.dataset.value; });
+      let selected = null;
+      screen.querySelectorAll('.opt').forEach(function(btn) {
+        btn.addEventListener('click', function() { screen.querySelectorAll('.opt').forEach(function(b) { b.classList.remove('selected'); }); this.classList.add('selected'); selected = this.dataset.value; });
       });
-      screen.querySelector('#responseBackBtn').addEventListener('click',()=>{ screen.remove(); const live=document.getElementById('liveScreen'); if(live) live.classList.add('active'); else showScreen('screen-home'); });
-      screen.querySelector('#submitResponseBtn').addEventListener('click',()=>{
-        if(!selected){ showToast('Please select an option first.'); return; }
-        const btn=screen.querySelector('#submitResponseBtn');
-        btn.innerHTML='<i class="fas fa-check-circle"></i> Response Locked In!';
-        btn.style.background='linear-gradient(135deg, #06D6A0, #059669)';
-        btn.disabled=true;
-        screen.querySelectorAll('.opt').forEach(b=>b.style.cursor='default');
+      screen.querySelector('#responseBackBtn').addEventListener('click', function() { screen.remove(); const live = document.getElementById('liveScreen'); if (live) live.classList.add('active'); else showScreen('screen-home'); });
+      screen.querySelector('#submitResponseBtn').addEventListener('click', function() {
+        if (!selected && challenge.type !== 'photo') { showToast('Please select an option first.'); return; }
+        const btn = screen.querySelector('#submitResponseBtn');
+        btn.innerHTML = '<i class="fas fa-check-circle"></i> Response Locked In!';
+        btn.style.background = 'linear-gradient(135deg, #06D6A0, #059669)';
+        btn.disabled = true;
+        screen.querySelectorAll('.opt').forEach(function(b) { b.style.cursor = 'default'; });
         showToast('✅ Your response has been recorded!');
-        challenge.responses+=1;
+        challenge.responses += 1;
         state.user.xp += challenge.xp;
         updateProfileUI();
-        setTimeout(()=>{ screen.remove(); const live=document.getElementById('liveScreen'); if(live) live.classList.add('active'); else showScreen('screen-home'); renderChallenges(); },1200);
+        setTimeout(function() { screen.remove(); const live = document.getElementById('liveScreen'); if (live) live.classList.add('active'); else showScreen('screen-home'); renderChallenges(); }, 1200);
       });
     }
 
     // ----- RESULTS -----
     function showResults(challenge) {
-      const html=`
+      const htmlContent = `
         <div id="resultsScreen" class="screen active" style="padding:12px 16px 80px;display:flex;flex-direction:column;">
           <div class="result-hero"><div class="trophy">🏆</div><div class="big-text">CHALLENGE COMPLETE</div><div class="sub">${challenge.title}</div><div style="margin-top:4px;font-size:14px;color:var(--secondary);"><i class="fas fa-bolt"></i> You earned +${challenge.xp} XP</div></div>
           <div class="result-stats">
             <div class="stat-card"><div class="num">${challenge.responses}</div><div class="label">Responses</div></div>
             <div class="stat-card"><div class="num">${challenge.totalInvited}</div><div class="label">Invited</div></div>
-            <div class="stat-card"><div class="num">${Math.round((challenge.responses/challenge.totalInvited)*100)}%</div><div class="label">Participation</div></div>
+            <div class="stat-card"><div class="num">${Math.round((challenge.responses / challenge.totalInvited) * 100)}%</div><div class="label">Participation</div></div>
             <div class="stat-card"><div class="num">🏅</div><div class="label">New Badge</div></div>
           </div>
           <div class="card" style="padding:12px;text-align:center;"><div style="font-size:13px;color:var(--text-secondary);">Most Popular Answer</div><div style="font-size:17px;font-weight:600;margin:3px 0;">Option B <span style="color:var(--secondary);">(42%)</span></div><div style="font-size:12px;color:var(--text-muted);">"${challenge.desc}"</div></div>
@@ -1048,33 +1084,33 @@
           <button class="btn btn-outline w-full" style="margin-top:6px;padding:10px;font-size:13px;" id="resultCreateBtn"><i class="fas fa-plus"></i> Create Another</button>
         </div>
       `;
-      $$('.screen').forEach(s=>s.classList.remove('active'));
-      const temp=document.createElement('div'); temp.innerHTML=html;
-      const screen=temp.firstElementChild;
+      $$('.screen').forEach(function(s) { s.classList.remove('active'); });
+      const temp = document.createElement('div'); temp.innerHTML = htmlContent;
+      const screen = temp.firstElementChild;
       document.getElementById('mainApp').appendChild(screen);
-      screen.querySelector('#resultShareBtn').addEventListener('click',()=>{ showToast('📤 Result shared with your friends!'); });
-      screen.querySelector('#resultHomeBtn').addEventListener('click',()=>{ screen.remove(); showScreen('screen-home'); });
-      screen.querySelector('#resultCreateBtn').addEventListener('click',()=>{ screen.remove(); document.querySelector('.nav-create')?.click(); });
-      const live=document.getElementById('liveScreen'); if(live) live.remove();
+      screen.querySelector('#resultShareBtn').addEventListener('click', function() { showToast('📤 Result shared with your friends!'); });
+      screen.querySelector('#resultHomeBtn').addEventListener('click', function() { screen.remove(); showScreen('screen-home'); });
+      screen.querySelector('#resultCreateBtn').addEventListener('click', function() { screen.remove(); document.querySelector('.nav-create')?.click(); });
+      const live = document.getElementById('liveScreen'); if (live) live.remove();
       clearInterval(state.timerInterval);
-      const c=state.challenges.find(ch=>ch.id===challenge.id);
-      if(c) c.status='completed';
+      const c = state.challenges.find(function(ch) { return ch.id === challenge.id; });
+      if (c) c.status = 'completed';
       renderChallenges();
     }
 
     // ----- LEADERBOARD -----
     let lbTab='friends';
     function renderLeaderboard(tab) {
-      lbTab=tab||lbTab;
-      const container=$('#leaderboardList');
-      if(!container) return;
-      const data = [...state.leaderboard].sort((a,b) => b.xp - a.xp);
-      const html=data.map((entry,i)=>{
-        let rankClass='';
-        if(i===0) rankClass='gold'; else if(i===1) rankClass='silver'; else if(i===2) rankClass='bronze';
-        return `<div class="lb-entry"><div class="rank ${rankClass}">${i+1}</div><div class="info"><div class="name">${entry.name}</div><div class="detail">${entry.handle}</div></div><div class="xp">${entry.xp} XP</div></div>`;
+      lbTab = tab || lbTab;
+      const container = $('#leaderboardList');
+      if (!container) return;
+      const data = [...state.leaderboard].sort(function(a, b) { return b.xp - a.xp; });
+      const htmlContent = data.map(function(entry, i) {
+        let rankClass = '';
+        if (i === 0) rankClass = 'gold'; else if (i === 1) rankClass = 'silver'; else if (i === 2) rankClass = 'bronze';
+        return `<div class="lb-entry"><div class="rank ${rankClass}">${i + 1}</div><div class="info"><div class="name">${entry.name}</div><div class="detail">${entry.handle}</div></div><div class="xp">${entry.xp} XP</div></div>`;
       }).join('');
-      container.innerHTML=html;
+      container.innerHTML = htmlContent;
     }
 
     // ----- AVATAR PICKER -----
@@ -1086,7 +1122,7 @@
     function openAvatarPicker() {
       const grid=document.getElementById('avatarGrid');
       grid.innerHTML='';
-      avatarPresets.forEach((preset)=>{
+      avatarPresets.forEach(function(preset) {
         const div=document.createElement('div');
         div.className='avatar-option';
         div.textContent=preset.value;
@@ -1096,7 +1132,7 @@
           div.classList.add('selected');
         }
         div.addEventListener('click',function(){
-          grid.querySelectorAll('.avatar-option').forEach(el=>el.classList.remove('selected'));
+          grid.querySelectorAll('.avatar-option').forEach(function(el) { el.classList.remove('selected'); });
           this.classList.add('selected');
           state.selectedAvatar = { type:this.dataset.type, value:this.dataset.value };
         });
@@ -1120,6 +1156,7 @@
       const u = state.user;
       const avatarEl = document.getElementById('profileAvatar');
       const homeAvatar = document.getElementById('homeAvatar');
+      if (!avatarEl || !homeAvatar) return;
       avatarEl.innerHTML = '';
       homeAvatar.innerHTML = '';
       if (u.avatarType === 'image' && u.avatar.startsWith('data:image')) {
@@ -1165,7 +1202,7 @@
       showToast('Profile updated!');
     }
 
-    // ----- PURCHASE FLOW (with store confirmation) -----
+    // ----- PURCHASE FLOW -----
     function initiatePurchase(productId) {
       if (state.isPurchaseInProgress) {
         showToast('Please wait, a purchase is already in progress.');
@@ -1191,93 +1228,68 @@
       state.isPurchaseInProgress = true;
       const { productId, productData } = state.pendingPurchase;
 
-      // Update modal to show processing
       document.getElementById('purchaseStatus').style.display = 'block';
-      document.getElementById('purchaseStatus').textContent = '⏳ Processing with Xiaomi GetApps...';
+      document.getElementById('purchaseStatus').textContent = '⏳ Processing Transaction...';
       document.getElementById('purchaseActions').style.display = 'none';
-      document.getElementById('confirmPurchase').disabled = true;
 
-      // Simulate store confirmation (network + backend)
-      setTimeout(() => {
-        // Grant entitlement only after successful confirmation
+      setTimeout(function() {
         if (productId.includes('sparks')) {
           const sparks = productData.sparks || 0;
           state.user.sparks += sparks;
-          showToast(`✅ Purchase confirmed! +${sparks} Sparks added. Balance: ${state.user.sparks} ⚡`);
-        } else if (productId === 'splitsecond_time_freeze') {
-          showToast('⏱️ Time Freeze token added! Use it on your next challenge.');
-        } else if (productId === 'splitsecond_template_pack') {
-          showToast('📦 Template pack unlocked! New challenges available.');
-        } else if (productId === 'splitsecond_plus_monthly') {
+          showToast(`✅ Purchase confirmed! +${sparks} Sparks added.`);
+        } else if (productId === 'SplitSecond_time_freeze') {
+          showToast('⏱️ Time Freeze token added!');
+        } else if (productId === 'SplitSecond_template_pack') {
+          showToast('📦 Template pack unlocked!');
+        } else if (productId === 'SplitSecond_plus_monthly') {
           state.user.premium = true;
-          showToast('✨ SplitSecond Plus activated! Enjoy premium features.');
-        } else {
-          showToast('✅ Purchase confirmed.');
+          showToast('✨ SplitSecond Plus activated!');
         }
         updateProfileUI();
         purchaseModal.classList.remove('open');
         state.pendingPurchase = null;
         state.isPurchaseInProgress = false;
-        document.getElementById('confirmPurchase').disabled = false;
       }, 1800);
     }
 
     function cancelPurchase() {
-      if (state.isPurchaseInProgress) {
-        showToast('Cannot cancel while processing.');
-        return;
-      }
+      if (state.isPurchaseInProgress) return;
       purchaseModal.classList.remove('open');
       state.pendingPurchase = null;
       showToast('Purchase cancelled.');
     }
 
-    // ----- IAP Bridge (WebView) -----
     const IAPBridge = {
       purchase: function(productId) {
-        if (window.AndroidIAP) {
-          window.AndroidIAP.purchase(productId);
+        if (window.AndroidIap) {
+          window.AndroidIap.purchase(productId);
         } else {
           initiatePurchase(productId);
         }
       },
       restorePurchases: function() {
-        if (window.AndroidIAP) {
-          window.AndroidIAP.restorePurchases();
+        if (window.AndroidIap) {
+          window.AndroidIap.restorePurchases();
         } else {
-          showToast('🔄 Restore simulated – check console.');
+          showToast('🔄 Restore simulated.');
         }
       }
     };
 
-    // Callbacks from native side
     window.onPurchaseSuccess = function(result) {
-      // In production, verify with backend. For demo, grant entitlement.
       const productId = result.productId;
       const product = productMap[productId];
       if (product) {
         if (productId.includes('sparks')) {
           state.user.sparks += product.sparks;
           updateProfileUI();
-          showToast(`✅ Purchase verified! +${product.sparks} Sparks.`);
-        } else if (productId === 'splitsecond_time_freeze') {
-          showToast('⏱️ Time Freeze token added.');
-        } else if (productId === 'splitsecond_template_pack') {
-          showToast('📦 Template pack unlocked.');
-        } else if (productId === 'splitsecond_plus_monthly') {
+          showToast(`✅ Verified: +${product.sparks} Sparks.`);
+        } else if (productId === 'SplitSecond_plus_monthly') {
           state.user.premium = true;
           updateProfileUI();
           showToast('✨ SplitSecond Plus activated.');
         }
       }
-    };
-
-    window.onPurchaseFailure = function(error) {
-      showToast('❌ Purchase failed: ' + (error.message || 'Unknown error'));
-    };
-
-    window.onPurchaseRestored = function(entitlements) {
-      showToast('🔄 Restore completed. Your purchases are available.');
     };
 
     // ----- AUTH -----
@@ -1294,47 +1306,18 @@
         submit.textContent='Sign In';
         toggleText.innerHTML='Don\'t have an account? <a id="authToggleLink">Sign Up</a>';
         nameField.style.display='none';
-        document.getElementById('authName').required=false;
       } else {
         title.textContent='Create Account';
         sub.textContent='Join SplitSecond';
         submit.textContent='Sign Up';
         toggleText.innerHTML='Already have an account? <a id="authToggleLink">Sign In</a>';
         nameField.style.display='block';
-        document.getElementById('authName').required=true;
       }
       document.getElementById('authToggleLink').addEventListener('click', function(e) {
         e.preventDefault();
-        const newMode = state.authMode==='signin' ? 'signup' : 'signin';
-        showAuth(newMode);
+        showAuth(state.authMode==='signin' ? 'signup' : 'signin');
       });
       authModal.classList.add('open');
-    }
-
-    function closeAuth() { authModal.classList.remove('open'); }
-
-    function handleAuthSubmit(e) {
-      e.preventDefault();
-      const email=document.getElementById('authEmail').value.trim();
-      const password=document.getElementById('authPassword').value;
-      const name=document.getElementById('authName').value.trim();
-      if (state.authMode==='signup' && !name) {
-        showToast('Please enter your display name.');
-        return;
-      }
-      const u=state.user;
-      if (state.authMode==='signup') {
-        u.username=name || 'User';
-        u.handle='@'+u.username.toLowerCase().replace(/\s/g,'');
-        u.avatar=getInitials(u.username);
-        u.avatarType='initials';
-        u.accountId = generateAccountId();
-        showToast('🎉 Account created! Welcome '+u.username);
-      } else {
-        showToast('👋 Welcome back, '+u.username);
-      }
-      closeAuth();
-      login();
     }
 
     function login() {
@@ -1348,193 +1331,109 @@
       setTimeout(startMusicOnInteraction, 300);
     }
 
-    function guestLogin() {
-      state.user.username='Guest';
-      state.user.handle='@guest';
-      state.user.avatar='👤';
-      state.user.avatarType='emoji';
-      state.user.accountId = generateAccountId();
-      closeAuth();
-      login();
-    }
-
     // ----- INIT -----
     function init() {
-      setTimeout(()=>{
+      setTimeout(function() {
         splash.classList.add('hidden');
-        setTimeout(()=>{ splash.style.display='none'; onboarding.style.display='flex'; },800);
-      },2200);
+        setTimeout(function() { splash.style.display = 'none'; onboarding.style.display = 'flex'; }, 800);
+      }, 2200);
 
-      $$('.onboard-dot').forEach(dot=>{
-        dot.addEventListener('click',function(){ showOnboardSlide(parseInt(this.dataset.index)); });
+      document.getElementById('onboardGetStarted').addEventListener('click', function() { showAuth('signup'); });
+      document.getElementById('onboardSignIn').addEventListener('click', function() { showAuth('signin'); });
+      document.getElementById('closeAuth').addEventListener('click', function() { authModal.classList.remove('open'); });
+      document.getElementById('authForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('authName').value.trim();
+        if (state.authMode === 'signup' && name) {
+          state.user.username = name;
+          state.user.avatar = getInitials(name);
+        }
+        authModal.classList.remove('open');
+        login();
       });
-      function showOnboardSlide(index) {
-        const slides=$$('.onboard-slide');
-        const dots=$$('.onboard-dot');
-        slides.forEach((s,i)=>s.classList.toggle('active',i===index));
-        dots.forEach((d,i)=>d.classList.toggle('active',i===index));
-        state.onboardIndex=index;
-      }
-
-      document.getElementById('onboardGetStarted').addEventListener('click',()=>{ showAuth('signup'); });
-      document.getElementById('onboardSignIn').addEventListener('click',()=>{ showAuth('signin'); });
-
-      document.getElementById('closeAuth').addEventListener('click', closeAuth);
-      document.getElementById('authForm').addEventListener('submit', handleAuthSubmit);
-      document.getElementById('guestLogin').addEventListener('click', guestLogin);
-      authModal.addEventListener('click', function(e){ if(e.target===this) closeAuth(); });
-
-      $$('.nav-item').forEach(item=>{
-        item.addEventListener('click',function(){ const screen=this.dataset.screen; if(screen) showScreen(screen); });
+      document.getElementById('guestLogin').addEventListener('click', function() {
+        state.user.username = 'Guest';
+        state.user.avatar = '👤';
+        state.user.avatarType = 'emoji';
+        authModal.classList.remove('open');
+        login();
       });
-      document.getElementById('navCreateBtn').addEventListener('click',()=>{ showScreen('screen-create'); });
+
+      $$('.nav-item').forEach(function(item) {
+        item.addEventListener('click', function() { const screen = this.dataset.screen; if (screen) showScreen(screen); });
+      });
+      document.getElementById('navCreateBtn').addEventListener('click', function() { showScreen('screen-create'); });
+      $$('.back-to-home').forEach(function(btn) {
+        btn.addEventListener('click', function() { showScreen('screen-home'); });
+      });
 
       document.getElementById('musicToggle').addEventListener('click', toggleMusic);
 
-      // "See all" links
-      document.addEventListener('click', function(e) {
-        const seeAll = e.target.closest('.see-all');
-        if (seeAll) {
-          const target = seeAll.dataset.target;
-          if (target) {
-            e.preventDefault();
-            showScreen(target);
-          } else {
-            showToast('More content coming soon!');
-          }
-        }
-      });
-
-      // IAP purchase buttons
       document.addEventListener('click', function(e) {
         const btn = e.target.closest('.iap-purchase');
-        if (btn) {
-          const productId = btn.dataset.product;
-          if (productId) {
-            IAPBridge.purchase(productId);
-          }
-        }
+        if (btn) IAPBridge.purchase(btn.dataset.product);
+
+        const seeAll = e.target.closest('.see-all');
+        if (seeAll && seeAll.dataset.target) showScreen(seeAll.dataset.target);
       });
 
-      // Purchase modal events
       document.getElementById('cancelPurchase').addEventListener('click', cancelPurchase);
       document.getElementById('confirmPurchase').addEventListener('click', confirmPurchase);
+      document.getElementById('restorePurchases').addEventListener('click', function() { IAPBridge.restorePurchases(); });
 
-      // Restore purchases
-      document.getElementById('restorePurchases').addEventListener('click', function() {
-        IAPBridge.restorePurchases();
-      });
-
-      document.getElementById('manageSubscription').addEventListener('click', function() {
-        showToast('📋 Opening subscription management...');
-        setTimeout(() => { showToast('Manage your subscription in the Xiaomi GetApps settings.'); }, 800);
-      });
-
-      // Create form
       const form=document.getElementById('createForm');
       form.addEventListener('submit',function(e){
         e.preventDefault();
         const title=document.getElementById('challengeTitle').value.trim();
-        if(!title){ showToast('Please enter a challenge title.'); return; }
-        const desc=document.getElementById('challengeDesc').value.trim()||'A new challenge!';
+        const desc=document.getElementById('challengeDesc').value.trim()||'No details provided.';
         const category=document.getElementById('challengeCategory').value;
-        const group=document.getElementById('challengeGroup').value;
-        const type=state.selectedType;
-        const timer=state.selectedTimer;
-        const unsafe=['kill','die','hurt','pain','danger','illegal','hack','steal','weapon','bomb','suicide'];
-        const lower=(title+' '+desc).toLowerCase();
-        for(const word of unsafe){ if(lower.includes(word)){ showToast('⛔ This challenge contains unsafe content. Please revise.'); return; } }
         const newChallenge={
           id:'c'+Date.now(),
           creator:state.user.username,
           title:title.toUpperCase(),
           desc:desc,
-          timer:timer,
-          maxTimer:timer,
+          timer:state.selectedTimer,
+          maxTimer:state.selectedTimer,
           participants:0,
           totalInvited:6,
-          xp:Math.floor(Math.random()*40)+20,
-          type:type,
+          xp:40,
+          type:state.selectedType,
           category:category,
-          group:group,
+          group:document.getElementById('challengeGroup').value,
           status:'active',
           responses:0,
         };
         state.challenges.unshift(newChallenge);
-        showToast('🚀 Challenge published! Share with friends.');
+        showToast('🚀 Challenge published!');
         form.reset();
-        document.querySelectorAll('.timer-btn').forEach(b=>b.classList.remove('active'));
-        document.querySelector('.timer-btn[data-sec="60"]').classList.add('active');
-        state.selectedTimer=60;
-        renderChallenges();
         showScreen('screen-home');
       });
 
-      $$('.type-btn').forEach(btn=>{
-        btn.addEventListener('click',function(){ $$('.type-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active'); state.selectedType=this.dataset.type; });
+      $$('.type-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() { $$('.type-btn').forEach(function(b) { b.classList.remove('active'); }); this.classList.add('active'); state.selectedType = this.dataset.type; });
       });
-      $$('.timer-btn').forEach(btn=>{
-        btn.addEventListener('click',function(){ $$('.timer-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active'); state.selectedTimer=parseInt(this.dataset.sec); });
-      });
-
-      $$('.lb-tab').forEach(tab=>{
-        tab.addEventListener('click',function(){ $$('.lb-tab').forEach(t=>t.classList.remove('active')); this.classList.add('active'); renderLeaderboard(this.dataset.tab); });
+      $$('.timer-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() { $$('.timer-btn').forEach(function(b) { b.classList.remove('active'); }); this.classList.add('active'); state.selectedTimer = parseInt(this.dataset.sec); });
       });
 
-      document.getElementById('profileSignOut').addEventListener('click',()=>{
-        if(confirm('Sign out?')){ state.isLoggedIn=false; mainApp.style.display='none'; onboarding.style.display='flex'; showToast('Signed out.'); }
-      });
       document.getElementById('profileEditBtn').addEventListener('click', openEditProfile);
       document.getElementById('closeEditProfile').addEventListener('click', closeEditProfile);
       document.getElementById('saveEditProfile').addEventListener('click', saveEditProfile);
-      editModal.addEventListener('click', function(e){ if(e.target===this) closeEditProfile(); });
-
       document.getElementById('changeAvatarBtn').addEventListener('click', openAvatarPicker);
-      document.getElementById('closeAvatarPicker').addEventListener('click', ()=>{ avatarModal.classList.remove('open'); });
-      document.getElementById('saveAvatar').addEventListener('click', ()=>{
-        if (state.selectedAvatar) {
-          applyAvatar(state.selectedAvatar);
-          avatarModal.classList.remove('open');
-        } else {
-          showToast('Please select an avatar or upload an image.');
-        }
-      });
-      const fileInput=document.getElementById('customAvatarInput');
-      const fileLabel=document.getElementById('customAvatarLabel');
-      fileLabel.addEventListener('click',()=>{ fileInput.click(); });
-      fileInput.addEventListener('change', function(e) {
-        const file=this.files[0];
-        if (!file) return;
-        const reader=new FileReader();
-        reader.onload=function(ev) {
-          const dataUrl=ev.target.result;
-          state.selectedAvatar = { type:'image', value:dataUrl };
-          const grid=document.getElementById('avatarGrid');
-          grid.querySelectorAll('.avatar-option').forEach(el=>el.classList.remove('selected'));
-          const div=document.createElement('div');
-          div.className='avatar-option selected';
-          const img=document.createElement('img');
-          img.src=dataUrl;
-          img.style.width='100%'; img.style.height='100%'; img.style.borderRadius='50%'; img.style.objectFit='cover';
-          div.appendChild(img);
-          div.dataset.type='image';
-          div.dataset.value=dataUrl;
-          grid.appendChild(div);
-          showToast('Image loaded! Press Save to apply.');
-        };
-        reader.readAsDataURL(file);
-      });
+      document.getElementById('closeAvatarPicker').addEventListener('click', function() { avatarModal.classList.remove('open'); });
+      document.getElementById('saveAvatar').addEventListener('click', function() { if (state.selectedAvatar) { applyAvatar(state.selectedAvatar); avatarModal.classList.remove('open'); } });
 
-      document.getElementById('profileAvatar').addEventListener('click', openAvatarPicker);
-      avatarModal.addEventListener('click', function(e){ if(e.target===this) avatarModal.classList.remove('open'); });
-      toast.addEventListener('click', ()=>toast.classList.remove('show'));
-      window.addEventListener('beforeunload', ()=>{
-        clearInterval(state.timerInterval);
-        if (audioCtx) audioCtx.close();
+      // Trending card handlers (Delegated for better reliability)
+      document.addEventListener('click', function(e) {
+        const trendingCard = e.target.closest('.trending-card');
+        if (trendingCard) {
+          const topic = trendingCard.dataset.topic || 'Trending';
+          showToast(`⚡ Opening ${topic} challenges...`);
+          showScreen('screen-challenges');
+        }
       });
 
       document.addEventListener('click', startMusicOnInteraction, { once: true });
-      document.addEventListener('touchstart', startMusicOnInteraction, { once: true });
     }
 
     document.addEventListener('DOMContentLoaded', init);
